@@ -1,0 +1,117 @@
+<form
+  [formGroup]="form"
+  class="p-fluid"
+  (submit)="onSubmit()"
+>
+  <div class="grid">
+    <div class="col field">
+      <label for="name">Tên khu vực</label>
+      <input
+        type="text"
+        pInputText
+        name="area_name"
+        id="name"
+        formControlName="name"
+        [class.ng-dirty]="
+          this.form.controls['name'].touched || this.form.controls['name'].dirty
+        "
+      />
+      <small
+        class="p-error"
+        *ngIf="
+          this.form.controls['name'].invalid &&
+          this.form.controls['name'].touched
+        "
+        >Tên khu vực không thể để trống</small
+      >
+    </div>
+    <div class="col field">
+      <label for="code">Mã khu vực</label>
+      <input
+        type="text"
+        pInputText
+        id="name"
+        formControlName="code"
+        [class.ng-dirty]="
+          this.form.controls['name'].touched || this.form.controls['name'].dirty
+        "
+      />
+      <small
+        class="p-error"
+        *ngIf="
+          this.form.controls['code'].invalid &&
+          this.form.controls['code'].touched
+        "
+        >Mã khu vực không thể để trống</small
+      >
+    </div>
+  </div>
+
+  <div class="field">
+    <label for="dept">Ban đại lễ</label>
+    <p-dropdown
+      [options]="departmentDetails"
+      optionLabel="department.name"
+      optionValue="id"
+      placeholder="Ban đại lễ"
+      [filter]="true"
+      filterBy="department.name"
+      formControlName="departmentDetailId"
+      [class.ng-dirty]="
+        this.form.controls['departmentDetailId'].touched ||
+        this.form.controls['departmentDetailId'].dirty
+      "
+      appendTo="body"
+    ></p-dropdown>
+    <small
+      class="p-error"
+      *ngIf="
+        this.form.controls['departmentDetailId'].invalid &&
+        this.form.controls['departmentDetailId'].touched
+      "
+      >Khu vực phải thuộc một ban</small
+    >
+  </div>
+  <div class="field">
+    <label for="quantity">Số lượng yêu cầu</label>
+    <p-inputNumber
+      mode="decimal"
+      placeholder="Số lượng thành viên yêu cầu"
+      formControlName="requiredQuantity"
+    ></p-inputNumber>
+    <small
+      class="p-error"
+      *ngIf="
+        this.form.controls['requiredQuantity'].invalid &&
+        this.form.controls['requiredQuantity'].touched
+      "
+      >Số lượng yêu cầu phải lớn hơn hoặc bằng 0</small
+    >
+  </div>
+  <div class="field">
+    <label for="note">Ghi chú</label>
+    <input
+      placeholder="Ghi chú"
+      type="text"
+      formControlName="note"
+      id="note"
+      pInputText
+    />
+    <small
+      class="p-error"
+      *ngIf="
+        this.form.controls['note'].invalid && this.form.controls['note'].touched
+      "
+      >Ghi chú không thể quá 200 ký tự</small
+    >
+  </div>
+  <div class="flex justify-content-end">
+    <button
+      type="submit"
+      pRipple
+      pButton
+      label="Lưu"
+      class="p-button-success p-button-outlined w-auto"
+    ></button>
+  </div>
+</form>

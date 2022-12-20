@@ -1,0 +1,42 @@
+
+export interface BrmDataPermission {
+	id: number;
+	idDonVi: number;
+	createdBy: number;
+	ma?: string ;
+	ten?: string ;
+	maXa?: any ;
+	soNha?: string ;
+	soFax?: string ;
+	email?: string ;
+	tenXa?: any ;
+	ghiChu?: string ;
+	diaChi?: any ;
+	maTinh?: any ;
+	tenTinh?: any ;
+	maHuyen?: any ;
+	maDiaChi?: any ;
+	tenHuyen?: any ;
+	taiKhoan?: any ;
+	maCapTren?: any ;
+	maPMQLCTN?: any ;
+	idSuChuTri?: any ;
+	soTaiKhoan?: any ;
+	idTaiKhoan?: any ;
+	maSuChuTri?: any ;
+	tenCapTren?: any ;
+	tenVietTat?: string ;
+	soDienThoai?: string ;
+	tenNganHang?: string ;
+	tenSuChuTri?: any ;
+	tenDangNhap?: any ;
+	inUsed: boolean;
+	isChungThanhNien: boolean;
+	isToDinhPhatQuang: boolean;
+	createdOn: Date;
+	idXa?: number ;
+	idTinh?: number ;
+	idHuyen?: number ;
+	parentID?: number ;
+	ngayThanhLap?: Date ;
+}

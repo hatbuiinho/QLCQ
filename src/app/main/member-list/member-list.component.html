@@ -1,0 +1,206 @@
+<p-toolbar>
+  <ng-template pTemplate="left">
+    <p-splitButton
+      icon="fa-solid fa-plus"
+      label="Thêm mới"
+      [model]="btnItems"
+      (onClick)="add()"
+      styleClass="p-button-raised p-button-text white-space-nowrap"
+      [style]="{ width: '200px', 'max-width': '40vw' }"
+    ></p-splitButton>
+  </ng-template>
+  <ng-template pTemplate="right">
+    <!-- <p-dropdown
+        [options]="statuses"
+        (onChange)="dt1.filterGlobal($event.value, FilterMatchMode.EQUALS)"
+        #dropdown
+        [style]="{ width: '200px', 'max-width' : '45vw' }"
+        placeholder="Tất cả"
+        [showClear]="true"
+        optionValue="value"
+        optionLabel="name"
+        class="mr-3"
+      >
+      </p-dropdown> -->
+    <span
+      class="p-input-icon-left"
+      style="width: 200px; max-width: 45vw"
+    >
+      <i class="pi pi-search"></i>
+      <input
+        class="w-100"
+        pInputText
+        type="text"
+        #searchInput
+        (input)="dt1.filterGlobal(searchInput.value, 'contains')"
+        placeholder="Từ khóa tìm kiếm"
+      />
+    </span>
+  </ng-template>
+</p-toolbar>
+<small>Giữ phím Ctrl hoặc Meta để chọn sắp xếp theo nhiều cột</small>
+<p-table
+  #dt1
+  [loading]="loading"
+  [scrollable]="true"
+  scrollHeight="calc(100vh - {{ tableOffsetTop }}px)"
+  [value]="members"
+  sortMode="multiple"
+  [(selection)]="selectedMembers"
+  dataKey="id"
+  [paginator]="true"
+  [selectionPageOnly]="true"
+  [rows]="10"
+  styleClass="p-datatable-striped"
+  [rowsPerPageOptions]="[10, 25, 50]"
+  [globalFilterFields]="[
+    'fullName',
+    'religiousName',
+    'email',
+    'note',
+    'work',
+    'temporaryDistrict.name',
+    'temporaryProvince.name',
+    'temporaryWard.name',
+    'permanentDistrict.name',
+    'permanentWard.name',
+    'permanentProvince.name',
+    'email',
+    'facebookAddress'
+  ]"
+>
+  <ng-template pTemplate="header">
+    <tr>
+      <th style="width: 4rem">
+        <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+      </th>
+      <th style="width: 6rem">Ảnh thẻ</th>
+      <th pSortableColumn="fullName">
+        Họ và tên <p-sortIcon field="fullName"></p-sortIcon>
+      </th>
+      <th pSortableColumn="phoneNumber">
+        Liên hệ <p-sortIcon field="phoneNumber"></p-sortIcon>
+      </th>
+      <th pSortableColumn="ctnType">
+        Định danh <p-sortIcon field="ctnType"></p-sortIcon>
+      </th>
+      <th pSortableColumn="permanentProvince.id">
+        Thường trú <p-sortIcon field="permanentProvince.id"></p-sortIcon>
+      </th>
+      <th pSortableColumn="note">
+        Ghi chú <p-sortIcon field="note"></p-sortIcon>
+      </th>
+      <th style="width: 4rem"></th>
+    </tr>
+  </ng-template>
+  <ng-template
+    pTemplate="body"
+    let-member
+  >
+    <tr style="cursor: point">
+      <td>
+        <p-tableCheckbox [value]="member"></p-tableCheckbox>
+      </td>
+      <td>
+        <p-image
+          [imageStyle]="{
+            height: '5rem',
+            width: '5rem',
+            'object-fit': 'cover'
+          }"
+          [src]="member.avatarPath ?? 'assets/img/avatar/avatar-1.png' | src"
+          (onImageError)="member.avatarPath = undefined"
+          alt="Avatar"
+          [preview]="member.avatarPath"
+          appendTo="body"
+        ></p-image>
+      </td>
+      <td
+        (click)="showDetail(member)"
+        class="clickable font-semibold white-space-nowrap"
+      >
+        <div class="inline-block mr-3">
+          {{ member.fullName }}<br />
+          {{ member.religiousName }}<br />
+          <small>Giới tính : {{ Gender.toString(member.gender) }} </small>
+        </div>
+      </td>
+      <td class="white-space-nowrap">
+        <span class="font-semibold"> {{ member.phoneNumber }}</span>
+        <a
+          class="text-sm block"
+          *ngIf="member.email"
+          href="mailto:{{ member.email }}"
+        >
+          {{ member.email }}</a
+        >
+        <a
+          class="text-sm block"
+          *ngIf="member.facebookAddress"
+          href="{{ member.facebookAddress | url }}"
+          target="_blank"
+        >
+          Facebook</a
+        >
+      </td>
+      <td class="white-space-nowrap">
+        <span class="font-semibold">
+          {{ PhanLoaiThanhNien.toString(member.ctnType) }} </span
+        ><br />
+        {{ member.dateOfBirth | date: "dd/MM/yy" }}<br />
+        {{ member.identityCard }}
+      </td>
+      <td class="white-space-nowrap">
+        <div
+          class="font-semibold"
+          *ngIf="member.permanentProvince"
+        >
+          {{ member.permanentProvince.pre }}
+          {{ member.permanentProvince.name }}
+        </div>
+        <div *ngIf="member.permanentDistrict">
+          {{ member.permanentDistrict.pre }}
+          {{ member.permanentDistrict.name }}
+        </div>
+        <div *ngIf="member.permanentWard">
+          {{ member.permanentWard.pre }}
+          {{ member.permanentWard.name }}
+        </div>
+      </td>
+      <td>
+        {{ member.note }}
+      </td>
+      <td>
+        <button
+          (click)="edit(member)"
+          pButton
+          pRipple
+          type="button"
+          icon="pi pi-pencil"
+          class="p-button-rounded p-button-text"
+        ></button>
+      </td>
+    </tr>
+  </ng-template>
+</p-table>
+
+<p-dialog
+  header="Thông tin thành viên"
+  [modal]="true"
+  [maximizable]="true"
+  [style]="{ width: '75vw' }"
+  [(visible)]="formVisible"
+  appendTo="body"
+  [scrollLeft]="true"
+  [blockScroll]="true"
+  [closable]="true"
+  [breakpoints]="{ '576px': '100vw' }"
+  [resizable]="true"
+>
+  <div class="">
+    <app-member
+      *ngIf="selectedMember && formVisible"
+      [member]="selectedMember"
+    ></app-member>
+  </div>
+</p-dialog>

@@ -1,0 +1,236 @@
+<p-toolbar>
+  <ng-template pTemplate="left">
+    <p-splitButton
+      label="Thêm tài khoản ({{ selectedUsers.length }})"
+      icon="pi pi-plus"
+      [model]="btnItems"
+      styleClass="p-button-text p-button-raised"
+      *permissison="
+        [Permissions.UsersCreate, Permissions.UsersUpdate];
+        op: 'AND'
+      "
+    >
+    </p-splitButton>
+  </ng-template>
+</p-toolbar>
+<p-table
+  #dt1
+  [loading]="loading"
+  [scrollable]="true"
+  scrollHeight="calc(100vh - {{ tableOffsetTop }}px)"
+  [value]="users"
+  sortMode="multiple"
+  [(selection)]="selectedUsers"
+  dataKey="id"
+  [paginator]="true"
+  [selectionPageOnly]="true"
+  [rows]="10"
+  styleClass="p-datatable-striped"
+  [rowsPerPageOptions]="[10, 25, 50]"
+  [lazy]="true"
+  [totalRecords]="totalRecords"
+  (onLazyLoad)="onLazyLoad($event)"
+  [showCurrentPageReport]="totalRecords > dt1.rows"
+  currentPageReportTemplate="Từ {first} đến {last} của {totalRecords} tài khoản"
+>
+  <ng-template pTemplate="header">
+    <tr>
+      <th style="width: 4rem">
+        <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+      </th>
+      <th pSortableColumn="userName">
+        Tên tài khoản <p-sortIcon field="userName"></p-sortIcon>
+      </th>
+      <th
+        pSortableColumn="member.fullName"
+        colspan="2"
+      >
+        Người dùng <p-sortIcon field="member.fullName"></p-sortIcon>
+      </th>
+      <th>Vai trò</th>
+      <th pSortableColumn="lock, active">
+        Trạng thái <p-sortIcon field="lock, active"></p-sortIcon>
+      </th>
+      <th pSortableColumn="note">
+        Ghi chú <p-sortIcon field="note"></p-sortIcon>
+      </th>
+      <th
+        *permissison="Permissions.UsersUpdate"
+        style="width: 4rem"
+      ></th>
+    </tr>
+  </ng-template>
+  <ng-template
+    pTemplate="body"
+    let-user
+  >
+    <tr style="cursor: point">
+      <td>
+        <p-tableCheckbox [value]="user"></p-tableCheckbox>
+      </td>
+      <td>
+        <div class="font-semibold">
+          {{ user.username }}
+        </div>
+      </td>
+      <td style="width: 7rem">
+        <p-image
+          [imageStyle]="{
+            height: '5rem',
+            width: '5rem',
+            'object-fit': 'cover'
+          }"
+          [src]="
+            user.member.avatarPath ?? 'assets/img/avatar/avatar-1.png' | src
+          "
+          (onImageError)="user.member.avatarPath = undefined"
+          alt="Avatar"
+          [preview]="user.member.avatarPath"
+          appendTo="body"
+        ></p-image>
+      </td>
+      <td class="font-semibold white-space-nowrap">
+        <div class="inline-block mr-3">
+          {{ user.member.fullName }}<br />
+          {{ user.member.religiousName }}<br />
+          <small>Giới tính : {{ Gender.toString(user.member.gender) }} </small>
+        </div>
+      </td>
+      <td>
+        <div *ngFor="let role of user.roles.slice(0, 2)">{{ role.name }}</div>
+        <div *ngIf="user.roles.length == 3">{{ user.roles[2].name }}</div>
+        <div *ngIf="user.roles.length > 3">...</div>
+      </td>
+      <td>
+        <div class="font-semibold">
+          <div class="font-semibold mb-1">
+            <p-tag
+              *ngIf="user.active"
+              value="Kích hoạt"
+              severity="success"
+            ></p-tag>
+            <p-tag
+              *ngIf="!user.active"
+              value="Vô hiệu"
+              severity="warning"
+            ></p-tag>
+          </div>
+          <div class="font-semibold">
+            <p-tag
+              *ngIf="!user.lock"
+              value="Không khóa ({{ user.failedCount }})"
+            ></p-tag>
+            <p-tag
+              *ngIf="user.lock"
+              value="Khóa"
+              severity="danger"
+            ></p-tag>
+          </div>
+          <div *ngIf="user.lock">
+            {{ user.lockAt | date : "dd/MM/yy HH:mm" }}
+          </div>
+        </div>
+      </td>
+      <td>
+        {{ user.member.note }}
+      </td>
+
+      <td *permissison="Permissions.UsersUpdate">
+        <button
+          pButton
+          pRipple
+          type="button"
+          icon="pi pi-pencil"
+          class="p-button-rounded p-button-text"
+        ></button>
+      </td>
+    </tr>
+  </ng-template>
+</p-table>
+
+<p-dialog
+  header="Thông tin tài khoản"
+  [modal]="true"
+  [maximizable]="true"
+  [style]="{ width: '75vw', 'min-height': '75vh' }"
+  [(visible)]="showEditDialog"
+  appendTo="body"
+  [scrollLeft]="true"
+  [blockScroll]="true"
+  [closable]="true"
+  [breakpoints]="{ '576px': '100vw' }"
+  [resizable]="true"
+>
+  <p-tabView>
+    <p-tabPanel header="Thông tin">
+      <div
+        class="p-fluid"
+        pFocusTrap
+        [formGroup]="form"
+      >
+        <div class="grid">
+          <div class="field col">
+            <label for="username">Tên tài khoản</label>
+            <input
+              type="text"
+              pInputText
+              id="username"
+              formControlName="username"
+              aria-label="new_username"
+              [autocomplete]="false"
+            />
+          </div>
+          <div class="field col">
+            <label for="password">Mật khẩu</label>
+            <p-password
+              [toggleMask]="true"
+              formControlName="password"
+              strongLabel="Mạnh"
+              mediumLabel="Trung bình"
+              weakLabel="Yếu"
+              [ariaAutoComplete]="false"
+              ariaLabel="new_password"
+              promptLabel="Nhập mật khẩu"
+            ></p-password>
+          </div>
+        </div>
+        <div class="grid">
+          <div class="field col-fixed">
+            <label for="statusInput"> Trạng thái hoạt động </label>
+            <p-toggleButton
+              inputId="statusInput"
+              formControlName="active"
+              [onLabel]="'Kích hoạt'"
+              offLabel="Vô hiệu"
+              [onIcon]="'fa-regular fa-circle-check'"
+              offIcon="fa-regular fa-circle-xmark"
+            ></p-toggleButton>
+          </div>
+          <div class="field col">
+            <label for="memberId">Thành viên</label>
+            <p-autoComplete
+
+              [lazy]="true"
+              dataKey="id"
+              [virtualScroll]="true"
+              [virtualScrollItemSize]="20"
+              [virtualScrollOptions]="{
+                autoSize: true,
+                lazy: true,
+                loading: loadingMember,
+                showLoader: true
+              }"
+              (onLazyLoad)="lazyMember($event)"
+            ></p-autoComplete>
+          </div>
+        </div>
+      </div>
+      <div class="grid">
+        <div class="field"></div>
+      </div>
+    </p-tabPanel>
+    <p-tabPanel header="Phân quyền">
+      <app-permission-assign></app-permission-assign>
+    </p-tabPanel>
+  </p-tabView>
+</p-dialog>

@@ -1,0 +1,140 @@
+<app-assigment-toolbar
+  #toolbar
+  [table]="dt1"
+  [(departmentDetails)]="departmentDetails"
+  [(selectedEvent)]="selectedEvent"
+  [(selectedDepartment)]="selectedDepartment"
+  [(selectedArea)]="selectedArea"
+  [(isAssign)]="isOpenDialog"
+  [(dialogDepartment)]="dialogDepartment"
+  [(dialogArea)]="dialogArea"
+  [(areas)]="areas"
+  [assignType]="AssignType.AREA"
+  [(showFilter)]="showFilter"
+  [(showCrudPopup)]="showCrudPopup"
+  [(isViewOnly)]="isViewOnly"
+></app-assigment-toolbar>
+<!-- <small>Giữ phím Ctrl hoặc Meta để chọn sắp xếp theo nhiều cột</small> -->
+<p-table
+  #dt1
+  [loading]="loading"
+  [scrollable]="true"
+  [value]="areas"
+  sortMode="multiple"
+  [(selection)]="selectedArea"
+  selectionMode="single"
+  dataKey="id"
+  styleClass="p-datatable-striped"
+  [globalFilterFields]="['name']"
+>
+  <ng-template pTemplate="header">
+    <tr>
+      <th
+        colspan="2"
+        pSortableColumn="name"
+      >
+        Khu vực <p-sortIcon field="name"></p-sortIcon>
+      </th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </ng-template>
+  <ng-template
+    pTemplate="body"
+    let-area
+    let-rowIndex="rowIndex"
+  >
+    <tr
+      style="cursor: point"
+      [pSelectableRow]="area"
+      [pSelectableRowIndex]="rowIndex"
+    >
+      <td class="font-semibold">
+        {{ area?.name }}
+      </td>
+      <td>
+        <p class="font-semibold">Số lượng:</p>
+        {{ area.actualQuantity }}/
+        <span *ngIf="area.requiredQuantity">{{ area.requiredQuantity }}</span>
+        <i
+          *ngIf="!area.requiredQuantity || area.requiredQuantity < 0"
+          class="fa-solid fa-infinity"
+        ></i>
+      </td>
+      <td>
+        <div
+          class="overflow-scroll"
+          style="max-height: 120px"
+        >
+          <p *ngFor="let role of area.roles">
+            {{ PositionType.toString(role.position) }}:
+            {{ role.religiousName || role.fullName }}
+          </p>
+        </div>
+      </td>
+      <td>
+        <button
+          (click)="openAreaMembers(area)"
+          pButton
+          pRipple
+          type="button"
+          icon="pi pi-info-circle"
+          class="p-button-rounded p-button-text"
+        ></button>
+        <button
+          (click)="edit(area)"
+          pButton
+          pRipple
+          type="button"
+          icon="pi pi-pencil"
+          class="p-button-rounded p-button-text"
+        ></button>
+      </td>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="emptymessage">
+    <tr>
+      <td
+        [colSpan]="10"
+        [style]="{ 'text-align': 'center' }"
+      >
+        Xin hãy chọn ban muốn phân khu vực
+      </td>
+    </tr>
+  </ng-template>
+</p-table>
+
+<app-department-assign-dialog
+  [(visible)]="isOpenDialog"
+  [department]="dialogDepartment"
+  [departments]="departmentDetails"
+  [event]="selectedEvent"
+  [isPropose]="isPropose"
+  [assignType]="AssignType.AREA"
+  [area]="dialogArea"
+  [isViewOnly]="isViewOnly"
+></app-department-assign-dialog>
+
+<p-dialog
+  header="Thông tin khu vực"
+  [modal]="true"
+  [maximizable]="true"
+  [style]="{ width: '75vw' }"
+  [(visible)]="showCrudPopup"
+  appendTo="body"
+  [scrollLeft]="true"
+  [blockScroll]="true"
+  [closable]="true"
+  [breakpoints]="{ '576px': '100vw' }"
+  [resizable]="true"
+>
+  <div class="">
+    <app-area
+      [selectedDepartment]="selectedDepartment"
+      [departments]="departmentDetails"
+      [value]="selectedArea"
+      (onSubmit)="save($event)"
+    ></app-area>
+  </div>
+</p-dialog>

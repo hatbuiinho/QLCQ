@@ -1,0 +1,28 @@
+<p-dropdown
+  [options]="events"
+  [(ngModel)]="selectedEvent"
+  emptyMessage="Không có đại lễ"
+  emptyFilterMessage="Không tìm thấy đại lễ phù hợp"
+  [filter]="true"
+  filterBy="name"
+  placeholder="Chọn đại lễ"
+  [appendTo]="appendTo"
+  [showClear]="showClear"
+  >
+  <ng-template
+    pTemplate="item"
+    let-event
+  >
+    <div style="max-width: 200px; overflow: hidden; text-overflow: ellipsis">
+      {{ event.name }}
+    </div>
+  </ng-template>
+  <ng-template pTemplate="selectedItem">
+    <div
+      *ngIf="selectedEvent"
+      style="max-width: 200px; overflow: hidden; text-overflow: ellipsis"
+    >
+      {{ selectedEvent.name }}
+    </div>
+  </ng-template>
+</p-dropdown>

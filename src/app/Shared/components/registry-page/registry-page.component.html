@@ -1,0 +1,365 @@
+<form
+  [formGroup]="form"
+  class="p-fluid"
+  style="min-height: 50vh"
+>
+  <div class="grid">
+    <div
+      class="field col"
+      style="min-width: 200px"
+    >
+      <label for="">Tên trang</label>
+      <input
+        type="text"
+        pInputText
+        formControlName="name"
+        name="page_name"
+      />
+    </div>
+    <div
+      class="field col"
+      style="min-width: 200px"
+    >
+      <label for="">Ngày bắt đầu</label>
+      <p-calendar
+        dateFormat="dd/mm/yy"
+        appendTo="body"
+        formControlName="start"
+      >
+      </p-calendar>
+    </div>
+    <div
+      class="field col"
+      style="min-width: 200px"
+    >
+      <label for="">Ngày kết thúc</label>
+      <p-calendar
+        appendTo="body"
+        formControlName="end"
+        dateFormat="dd/mm/yy"
+      >
+      </p-calendar>
+    </div>
+  </div>
+  <div class="grid">
+    <div
+      class="field col"
+      style="min-width: 200px"
+    >
+      <label for="">Đại lễ</label>
+      <app-event-dropdown [(value)]="selectedEvent"></app-event-dropdown>
+    </div>
+    <div
+      class="field col"
+      style="min-width: 200px"
+    >
+      <label for="">Chúng thanh niên</label>
+      <p-dropdown
+        [options]="ctns"
+        formControlName="ctnId"
+        [showClear]="true"
+        placeholder="Chúng thanh niên"
+        [filter]="true"
+        filterBy="name"
+        emptyFilterMessage="Không có kết quả phù hợp"
+        emptyMessage="Không lấy được danh sách chúng thanh niên"
+        optionValue="id"
+        optionLabel="name"
+        appendTo="body"
+      >
+        <ng-template
+          pTemplate="item"
+          let-item
+        >
+          {{ item.name }}
+        </ng-template>
+        <ng-template
+          let-item
+          pTemplate="selectedItem"
+        >
+          {{ item.name }}
+        </ng-template>
+      </p-dropdown>
+    </div>
+    <div
+      class="field col"
+      style="min-width: 100px"
+    >
+      <label for="">Phạm vi</label>
+      <p-dropdown
+        formControlName="type"
+        [options]="scopeTypes"
+        optionValue="value"
+        optionLabel="label"
+        appendTo="body"
+      ></p-dropdown>
+    </div>
+  </div>
+  <div class="field">
+    <label for=""
+      >Các ban được phép đăng ký
+      <strong>(Để trống sẽ đặt là tất cả các ban)</strong></label
+    >
+    <p-multiSelect
+      [options]="departments"
+      [(ngModel)]="selectedDepartments"
+      [ngModelOptions]="{ standalone: true }"
+      [filter]="true"
+      filterBy="department.name,department.code"
+      emptyMessage="Đại lễ hiện không có ban phù hợp"
+      emptyFilterMessage="Không tìm thấy ban phù hợp"
+      defaultLabel="Tất cả ban đại lễ phù hợp"
+      appendTo="body"
+      dataKey="id"
+    >
+      <ng-template pTemplate="selectedItems">
+        <ng-container *ngIf="!selectedDepartments.length">
+          <strong>Tất cả ban đại lễ phù hợp</strong>
+        </ng-container>
+        <ng-container *ngIf="selectedDepartments.length">
+          <ng-container *ngFor="let dept of selectedDepartments">
+            <p-tag
+              *ngIf="dept.department && dept.department.name"
+              [value]="dept.department.name"
+              [severity]="dept.type === ScopeType.Public ? 'success' : ''"
+              class="mr-1"
+              [pTooltip]="
+                dept.department.code + ' ' + ScopeType.toString(dept.type)
+              "
+              tooltipPosition="top"
+            ></p-tag>
+          </ng-container>
+        </ng-container>
+      </ng-template>
+      <ng-template
+        let-value
+        pTemplate="item"
+      >
+        {{ value.department?.name }}
+      </ng-template>
+    </p-multiSelect>
+  </div>
+  <div class="field">
+    <label for=""
+      >Điểm nhận thẻ
+      <strong>(Để trống sẽ đặt là tất cả điểm thuộc đại lễ)</strong></label
+    >
+    <p-multiSelect
+      [options]="receiveCardAddresses"
+      [(ngModel)]="selectedReceiveCardAddresses"
+      [ngModelOptions]="{ standalone: true }"
+      [filter]="true"
+      filterBy="name,description,address"
+      emptyMessage="Đại lễ hiện không có điểm nhận thẻ"
+      emptyFilterMessage="Không tìm thấy  điểm nhận thẻ phù hợp"
+      defaultLabel="Tất cả điểm nhận thẻ phù hợp"
+      appendTo="body"
+      dataKey="id"
+    >
+      <ng-template pTemplate="selectedItems">
+        <ng-container *ngIf="!selectedReceiveCardAddresses.length">
+          <strong>Tất cả điểm nhận thẻ phù hợp</strong>
+        </ng-container>
+        <ng-container *ngIf="selectedReceiveCardAddresses.length">
+          <ng-container *ngFor="let item of selectedReceiveCardAddresses">
+            <p-tag
+              *ngIf="item.name"
+              [value]="item.name"
+              [severity]="item.name"
+              class="mr-1"
+              [pTooltip]="item.description ?? 'Không có mô tả'"
+              tooltipPosition="top"
+            ></p-tag>
+          </ng-container>
+        </ng-container>
+      </ng-template>
+      <ng-template
+        let-value
+        pTemplate="item"
+      >
+        {{ value?.name }}
+      </ng-template>
+    </p-multiSelect>
+  </div>
+  <p-table
+    [value]="selectedStartAddresses"
+    dataKey="name"
+    #addressTable
+    [globalFilterFields]="[
+      'name',
+      'province.name',
+      'district.name',
+      'ward.name'
+    ]"
+  >
+    <ng-template pTemplate="caption">
+      <div class="grid">
+        <div class="col">
+          <p-dropdown
+            [options]="startAddresses"
+            [(ngModel)]="selectedAddress"
+            [ngModelOptions]="{ standalone: true }"
+            [filter]="true"
+            filterBy="name, province.name, ward.name, district.name"
+            dataKey="id"
+            [showClear]="true"
+            placeholder="Điểm xuất phát"
+            emptyFilterMessage="Không tìm thấy địa điểm phù hợp"
+            emptyMessage="Không có địa điểm xuất phát"
+            appendTo="body"
+          >
+            <ng-template
+              pTemplate="item"
+              let-item
+            >
+              <div class="font-semibold">
+                {{ item.name }}
+              </div>
+              {{ item.ward?.pre }} {{ item.ward?.name }},
+              {{ item.district?.pre }} {{ item.district?.name }},
+              {{ item.province?.pre }} {{ item.province?.name }}
+            </ng-template>
+            <ng-template
+              pTemplate="selectedItem"
+              let-item
+            >
+              <div class="font-semibold">
+                {{ item.name }}
+              </div>
+            </ng-template>
+          </p-dropdown>
+        </div>
+        <div class="col">
+          <p-dropdown
+            [options]="selectedAddress?.times ?? []"
+            [ngModelOptions]="{ standalone: true }"
+            [(ngModel)]="selectedTime"
+            [filter]="true"
+            filterBy="name, start"
+            dataKey="id"
+            [showClear]="true"
+            placeholder="Thời gian xuất phát"
+            emptyFilterMessage="Không tìm thấy thời gian phù hợp"
+            emptyMessage="Không có thời gian xuất phát"
+            appendTo="body"
+          >
+            <ng-template
+              pTemplate="item"
+              let-item
+            >
+              <div class="font-semibold">
+                {{ item.name }}
+              </div>
+            </ng-template>
+            <ng-template
+              pTemplate="selectedItem"
+              let-item
+            >
+              <div class="font-semibold">
+                {{ item.name }}
+              </div>
+            </ng-template>
+          </p-dropdown>
+        </div>
+        <div class="col">
+          <input
+            type="text"
+            pInputText
+            #searchInput
+            (input)="addressTable.filterGlobal(searchInput.value, 'contains')"
+            placeholder="Tìm kiếm..."
+          />
+        </div>
+        <div class="p-2 flex justify-content-end">
+          <button
+            type="button"
+            pButton
+            pRipple
+            class="p-button-outlined w-auto"
+            icon="pi pi-plus"
+            label="Thêm"
+            [disabled]="!selectedAddress"
+            (click)="addTime()"
+          ></button>
+        </div>
+      </div>
+    </ng-template>
+    <ng-template pTemplate="header">
+      <tr>
+        <th style="width: 5rem"></th>
+        <th pSortableColumn="name">
+          Thông tin <p-sortIcon field="name"></p-sortIcon>
+        </th>
+        <th
+          pSortableColumn="provinceId"
+          colspan="2"
+        >
+          Địa điểm <p-sortIcon field="provinceId"></p-sortIcon>
+        </th>
+        <th pSortableColumn="category">
+          Ghi chú <p-sortIcon field="category"></p-sortIcon>
+        </th>
+      </tr>
+    </ng-template>
+    <ng-template
+      pTemplate="body"
+      let-item
+      let-expanded="expanded"
+    >
+      <tr>
+        <td>
+          <button
+            type="button"
+            pButton
+            pRipple
+            [pRowToggler]="item"
+            class="p-button-text p-button-rounded p-button-plain"
+            [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"
+          ></button>
+        </td>
+        <td>{{ item.name }}</td>
+        <td>
+          <div
+            class="font-semibold"
+            *ngIf="item.province"
+          >
+            {{ item.province.pre }}
+            {{ item.province.name }}
+          </div>
+          <div *ngIf="item.district">
+            {{ item.district.pre }}
+            {{ item.district.name }}
+          </div>
+          <div *ngIf="item.ward">
+            {{ item.ward.pre }}
+            {{ item.ward.name }}
+          </div>
+        </td>
+        <td>
+          {{ item.address }}
+        </td>
+        <td>{{ item.category }}</td>
+      </tr>
+    </ng-template>
+    <ng-template
+      pTemplate="rowexpansion"
+      let-address
+    >
+      <tr>
+        <td colspan="7">
+          <div class="p-3">
+            <app-start-time-table
+              [showAddress]="false"
+              [value]="address.times"
+              [address]="address"
+              [showEvent]="false"
+              [event]="selectedEvent"
+              [overrideDelete]="true"
+              (onDelete)="removeTime(address, $event)"
+            ></app-start-time-table>
+          </div>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</form>

@@ -1,0 +1,148 @@
+<div id="app">
+  <section class="section">
+    <div class="d-flex flex-wrap align-items-stretch">
+      <div
+        class="col-lg-4 col-md-6 col-12 order-lg-1 min-vh-100 order-2 bg-white"
+      >
+        <div class="p-4 m-3">
+          <img
+            src="/favicon.ico"
+            alt="logo"
+            width="80"
+            class="shadow-light rounded-circle mb-5 mt-2"
+          />
+          <h4 class="text-dark font-weight-normal">
+            Chào mừng đến với
+            <span class="font-weight-bold white-space-nowrap"
+              >CTN Phật Quang</span
+            >
+          </h4>
+          <p class="text-muted">
+            Trước khi bắt đầu, quý thầy cô và huynh đệ cần đăng nhập ạ
+          </p>
+          <form
+            (submit)="login()"
+            class="needs-validation"
+          >
+            <div class="form-group">
+              <label for="username">Tên đăng nhập</label>
+              <input
+                [(ngModel)]="userLogin.username"
+                id="username"
+                type="text"
+                class="form-control"
+                name="username"
+                tabindex="1"
+                required
+                autofocus
+              />
+              <div class="invalid-feedback">Vui lòng nhập tên đăng nhập</div>
+            </div>
+
+            <div class="form-group">
+              <div class="d-block">
+                <label
+                  for="password"
+                  class="control-label"
+                  >Mật khẩu</label
+                >
+              </div>
+              <input
+                [(ngModel)]="userLogin.password"
+                id="password"
+                type="password"
+                class="form-control"
+                name="password"
+                tabindex="2"
+                required
+              />
+              <div class="invalid-feedback">Vui lòng nhập mật khẩu</div>
+            </div>
+
+            <div class="form-group">
+              <div class="custom-control custom-checkbox">
+                <input
+                  [(ngModel)]="userLogin.remember"
+                  type="checkbox"
+                  name="remember"
+                  class="custom-control-input"
+                  tabindex="3"
+                  id="remember-me"
+                />
+                <label
+                  class="custom-control-label"
+                  for="remember-me"
+                  >Ghi nhớ</label
+                >
+              </div>
+            </div>
+
+            <div class="form-group text-right">
+              <!-- <a
+                href="auth-forgot-password.html"
+                class="float-left mt-3"
+              >
+                Forgot Password?
+              </a> -->
+              <span></span>
+              <button
+                type="submit"
+                class="btn btn-primary btn-lg btn-icon icon-right"
+                tabindex="4"
+              >
+                Đăng nhập
+              </button>
+            </div>
+
+            <!-- <div class="mt-5 text-center">
+              Don't have an account?
+              <a href="auth-register.html">Create new one</a>
+            </div> -->
+          </form>
+
+          <div class="text-center mt-5 text-small">
+            Copyright &copy; CTNPQ. Made with 💙 by CTNPQ
+            <!-- <div class="mt-2">
+              <a href="#">Privacy Policy</a>
+              <div class="bullet"></div>
+              <a href="#">Terms of Service</a>
+            </div> -->
+          </div>
+        </div>
+      </div>
+      <div
+        class="col-lg-8 col-12 order-lg-2 order-1 min-vh-100 background-walk-y position-relative overlay-gradient-bottom"
+        style="background-size: auto"
+        [style.backgroundImage]="'url(/assets/img/login-bg.jpg)'"
+      >
+        <div class="absolute-bottom-left index-2">
+          <div class="text-light p-5 pb-2">
+            <div class="mb-5 pb-3">
+              <h1 class="mb-2 display-4 font-weight-bold">
+                Thiền Tôn Phật Quang
+              </h1>
+              <h5 class="font-weight-normal text-muted-transparent">
+                Núi Dinh, Bà Rịa, Vũng Tàu, Việt Nam -
+                {{ time | date : 'HH:mm:ss' }}
+              </h5>
+            </div>
+            <!-- Photo by
+            <a
+              class="text-light bb"
+              target="_blank"
+              href="https://unsplash.com/photos/a8lTjWJJgLA"
+              >Justin Kauffman</a
+            >
+            on
+            <a
+              class="text-light bb"
+              target="_blank"
+              href="https://unsplash.com"
+              >Unsplash</a
+            > -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>

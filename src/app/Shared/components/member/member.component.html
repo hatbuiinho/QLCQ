@@ -1,0 +1,591 @@
+<div class="grid my-1">
+  <div
+    class="col"
+    style="min-width: 300px"
+  >
+    <p-card
+      header="Thông tin cơ bản"
+      styleClass="p-card-shadow"
+    >
+      <ng-template pTemplate="header">
+        <div class="relative">
+          <label
+            id="avtBtn"
+            for="avtInput"
+            pButton
+            pRipple
+            type="button"
+            icon="fa-solid fa-arrow-up-from-bracket"
+            class="p-button-rounded p-button-sm p-button-raised"
+            (click)="showingUpload($event)"
+          ></label>
+          <app-croppable-image-input
+            inputId="avtInput"
+            (save)="upload($event)"
+            [ratio]="3 / 4"
+          ></app-croppable-image-input>
+          
+          <p-image
+            alt="avt"
+            [imageStyle]="{
+              'max-height': '30vh',
+              'object-fit': 'contain'
+            }"
+            imageClass="mx-auto"
+            [style]="{
+              'background-color': 'var(--gray-200)',
+              display: 'flex'
+            }"
+            [preview]="true"
+            appendTo="body"
+            [src]="member?.avatarPath ?? 'assets/img/avatar/avatar-1.png' | src"
+          ></p-image>
+        </div>
+      </ng-template>
+      <div
+        class="p-fluid"
+        [formGroup]="form"
+      >
+        <div class="field">
+          <label for="fullName">Họ và tên</label>
+          <input
+            type="text"
+            aria-label="fullName"
+            id="fullName"
+            pInputText
+            formControlName="fullName"
+            (change)="fieldChange('fullName')"
+            class="font-bold"
+          />
+        </div>
+        <div class="grid">
+          <div class="field col">
+            <label for="dob">Ngày sinh</label>
+            <p-calendar
+              formControlName="dateOfBirth"
+              dateFormat="dd/mm/yy"
+              inputId="dob"
+              (ngModelChange)="fieldChange('dateOfBirth')"
+              styleClass="font-bold"
+            ></p-calendar>
+          </div>
+          <div class="col">
+            <label for="">Giới tính</label>
+            <div class="field-radiobutton">
+              <p-radioButton
+                ariaLabel="gender"
+                [value]="Gender.Male"
+                formControlName="gender"
+                inputId="male"
+                (ngModelChange)="fieldChange('gender')"
+                class="font-bold ml-3"
+              ></p-radioButton>
+              <label for="male">Nam</label>
+            </div>
+            <div class="field-radiobutton">
+              <p-radioButton
+                ariaLabel="gender"
+                [value]="Gender.Female"
+                formControlName="gender"
+                inputId="female"
+                class="font-bold ml-3"
+                (ngModelChange)="fieldChange('gender')"
+              ></p-radioButton>
+              <label for="female">Nữ</label>
+            </div>
+          </div>
+        </div>
+        <div class="field">
+          <label for="">Pháp danh</label>
+          <input
+            type="text"
+            name="religiousName"
+            id="religiousName"
+            pInputText
+            formControlName="religiousName"
+            (change)="fieldChange('religiousName')"
+            class="font-bold"
+          />
+        </div>
+        <div class="field">
+          <label for="phoneNumber">Số điện thoại</label>
+          <div class="p-inputgroup">
+            <input
+              type="text"
+              name="phoneNumber"
+              id="phoneNumber"
+              pInputText
+              formControlName="phoneNumber"
+              (change)="fieldChange('phoneNumber')"
+              class="font-bold"
+            />
+            <a
+              pButton
+              pRipple
+              icon="fa-solid fa-headset"
+              href="tel:{{ member?.phoneNumber }}"
+              class="p-button-outlined p-button-success"
+              [class.p-disabled]="!member?.phoneNumber"
+            ></a>
+          </div>
+        </div>
+        <div class="field">
+          <label for="identityCard">Căn cước công dân</label>
+          <div class="p-inputgroup">
+            <input
+              type="text"
+              name="identityCard"
+              id="identityCard"
+              pInputText
+              formControlName="identityCard"
+              (change)="fieldChange('identityCard')"
+              class="font-bold"
+            />
+            <a
+              pButton
+              pRipple
+              icon="fa-solid fa-copy"
+              class="p-button-outlined p-button-success"
+              [class.p-disabled]="!member?.identityCard"
+              ngxClipboard
+              [cbContent]="member?.identityCard"
+              (cbOnSuccess)="onCopySuccess()"
+              pTooltip="Copy"
+            ></a>
+          </div>
+        </div>
+        <div class="field">
+          <label for="facebookAddress">Địa chỉ Facebook</label>
+
+          <div class="p-inputgroup">
+            <input
+              type="text"
+              name="facebookAddress"
+              id="facebookAddress"
+              pInputText
+              formControlName="facebookAddress"
+              (change)="fieldChange('facebookAddress')"
+              class="font-bold"
+            />
+            <a
+              pButton
+              pRipple
+              icon="fa-brands fa-facebook-f"
+              class="p-button-outlined p-button-success"
+              href="tel:{{ member?.facebookAddress }}"
+              [class.p-disabled]="!member?.facebookAddress"
+            ></a>
+          </div>
+        </div>
+        <div class="field">
+          <label for="email">Địa chỉ email</label>
+          <div class="p-inputgroup">
+            <input
+              type="email"
+              name="email"
+              id="email"
+              pInputText
+              formControlName="email"
+              (change)="fieldChange('email')"
+              class="font-bold"
+            />
+            <a
+              pButton
+              pRipple
+              icon="fa-regular fa-envelope"
+              class="p-button-outlined p-button-success"
+              href="mailto:{{ member?.email }}"
+              [class.p-disabled]="!member?.email"
+            ></a>
+          </div>
+        </div>
+      </div>
+    </p-card>
+  </div>
+  <div
+    class="col"
+    style="min-width: 66.66%"
+  >
+    <p-card styleClass="p-card-shadow">
+      <ng-template pTemplate="header">
+        <div class="flex justify-content-end">
+          <button
+            pButton
+            pRipple
+            label="Thêm"
+            icon="pi pi-plus"
+            *ngIf="!member?.id"
+            (click)="add()"
+          ></button>
+          <ng-container *ngIf="member?.id">
+            <button
+              pButton
+              pRipple
+              class="w-auto"
+              *ngIf="readonly"
+              (click)="readonly = false"
+              icon="fa-regular fa-pen-to-square"
+              label="Chỉnh sửa"
+            ></button>
+            <button
+              pButton
+              pRipple
+              class="w-auto p-button-outlined p-button-warning mr-3"
+              *ngIf="!readonly"
+              icon="fa-regular fa-circle-xmark"
+              (click)="cancelEdit()"
+              label="Hủy"
+            ></button>
+            <button
+              pButton
+              pRipple
+              class="w-auto p-button-success"
+              *ngIf="!readonly"
+              icon="pi pi-check"
+              (click)="update(fieldChanges)"
+              label="Lưu thay đổi"
+            ></button>
+          </ng-container>
+        </div>
+      </ng-template>
+      <div
+        class="p-fluid"
+        [formGroup]="addressForm"
+      >
+        <div
+          class="field"
+          *ngIf="member?.id"
+        >
+          <label for="">Ảnh căn cước công dân </label>
+          <p-carousel
+            *ngIf="member && member.identityCardImagePaths && readonly"
+            [value]="member.identityCardImagePaths"
+            [numVisible]="3"
+            [numScroll]="1"
+            [circular]="false"
+          >
+            <ng-template
+              let-item
+              pTemplate="item"
+            >
+              <div class="flex justify-content-center">
+                <p-image
+                  [src]="item | src"
+                  height="100"
+                  [preview]="true"
+                  appendTo="body"
+                ></p-image>
+              </div>
+            </ng-template>
+          </p-carousel>
+          <p-fileUpload
+            *ngIf="!readonly"
+            chooseLabel="Chọn ảnh"
+            cancelLabel="Hủy"
+            uploadLabel="Lưu"
+            (uploadHandler)="uploadIdentities($event)"
+            [customUpload]="true"
+            [multiple]="true"
+            accept="image/*"
+          ></p-fileUpload>
+        </div>
+        <div class="field">
+          <label for="">Địa chỉ thường trú</label>
+          <div class="grid">
+            <div class="field col">
+              <p-dropdown
+                [options]="provinces"
+                [lazy]="true"
+                formControlName="permanentProvinceId"
+                (onShow)="loadProvinces()"
+                [filter]="true"
+                filterBy="name, code"
+                optionValue="id"
+                placeholder="Tỉnh/TP"
+                dataKey="id"
+                [showClear]="true"
+                appendTo="body"
+                (onChange)="fieldChange('permanentProvinceId')"
+                (onChange)="
+                  loadDistricts(addressForm.value.permanentProvinceId)
+                "
+                styleClass="font-bold"
+              >
+                <ng-template
+                  pTemplate="item"
+                  let-address
+                >
+                  <div style="overflow: hidden; text-overflow: ellipsis">
+                    {{ address.pre }} {{ address.name }}
+                  </div>
+                </ng-template>
+                <ng-template
+                  pTemplate="selectedItem"
+                  let-item
+                >
+                  <div style="overflow: hidden; text-overflow: ellipsis">
+                    {{ item.pre }}
+                    {{ item.name }}
+                  </div>
+                </ng-template>
+              </p-dropdown>
+            </div>
+            <div class="field col">
+              <p-dropdown
+                formControlName="permanentDistrictId"
+                [options]="districts"
+                optionValue="id"
+                [filter]="true"
+                filterBy="name, code"
+                placeholder="Quận/Huyện"
+                dataKey="id"
+                [showClear]="true"
+                appendTo="body"
+                styleClass="font-bold"
+                (onChange)="loadWards(addressForm.value.permanentDistrictId)"
+              >
+                <ng-template
+                  pTemplate="item"
+                  let-address
+                >
+                  <div style="overflow: hidden; text-overflow: ellipsis">
+                    {{ address.pre }} {{ address.name }}
+                  </div>
+                </ng-template>
+                <ng-template
+                  pTemplate="selectedItem"
+                  let-item
+                >
+                  <div style="overflow: hidden; text-overflow: ellipsis">
+                    {{ item.pre }}
+                    {{ item.name }}
+                  </div>
+                </ng-template>
+              </p-dropdown>
+            </div>
+            <div class="field col">
+              <p-dropdown
+                formControlName="permanentWardId"
+                optionValue="id"
+                [options]="wards"
+                [filter]="true"
+                filterBy="name, code"
+                placeholder="Phường/Xã"
+                dataKey="id"
+                [showClear]="true"
+                appendTo="body"
+                styleClass="font-bold"
+              >
+                <ng-template
+                  pTemplate="item"
+                  let-address
+                >
+                  <div style="overflow: hidden; text-overflow: ellipsis">
+                    {{ address.pre }} {{ address.name }}
+                  </div>
+                </ng-template>
+                <ng-template
+                  pTemplate="selectedItem"
+                  let-item
+                >
+                  <div style="overflow: hidden; text-overflow: ellipsis">
+                    {{ item.pre }}
+                    {{ item.name }}
+                  </div>
+                </ng-template>
+              </p-dropdown>
+            </div>
+            <div class="field col">
+              <input
+                class=""
+                pInputText
+                placeholder="Số nhà..."
+                formControlName="permanentAddress"
+              />
+            </div>
+          </div>
+        </div>
+        <label for="">Địa chỉ tạm trú</label>
+        <div class="grid">
+          <div class="field col">
+            <p-dropdown
+              [options]="provinces"
+              [lazy]="true"
+              formControlName="temporaryProvinceId"
+              optionValue="id"
+              (onShow)="loadProvinces()"
+              [filter]="true"
+              filterBy="name, code"
+              placeholder="Tỉnh/TP"
+              dataKey="id"
+              [showClear]="true"
+              appendTo="body"
+              styleClass="font-bold"
+              (onChange)="
+                loadTempDistricts(addressForm.value.temporaryProvinceId)
+              "
+            >
+              <ng-template
+                pTemplate="item"
+                let-address
+              >
+                <div style="overflow: hidden; text-overflow: ellipsis">
+                  {{ address.pre }} {{ address.name }}
+                </div>
+              </ng-template>
+              <ng-template
+                let-item
+                pTemplate="selectedItem"
+              >
+                <div style="overflow: hidden; text-overflow: ellipsis">
+                  {{ item.pre }}
+                  {{ item.name }}
+                </div>
+              </ng-template>
+            </p-dropdown>
+          </div>
+          <div class="field col">
+            <p-dropdown
+              formControlName="temporaryDistrictId"
+              [options]="tempDistricts"
+              optionValue="id"
+              [filter]="true"
+              filterBy="name, code"
+              placeholder="Quận/Huyện"
+              dataKey="id"
+              [showClear]="true"
+              appendTo="body"
+              styleClass="font-bold"
+              (onChange)="loadTempWards(addressForm.value.temporaryDistrictId)"
+            >
+              <ng-template
+                pTemplate="item"
+                let-address
+              >
+                <div style="overflow: hidden; text-overflow: ellipsis">
+                  {{ address.pre }} {{ address.name }}
+                </div>
+              </ng-template>
+              <ng-template
+                pTemplate="selectedItem"
+                let-item
+              >
+                <div style="overflow: hidden; text-overflow: ellipsis">
+                  {{ item.pre }}
+                  {{ item.name }}
+                </div>
+              </ng-template>
+            </p-dropdown>
+          </div>
+          <div class="field col">
+            <p-dropdown
+              formControlName="temporaryWardId"
+              [options]="tempWards"
+              optionValue="id"
+              [filter]="true"
+              filterBy="name, code"
+              placeholder="Phường/Xã"
+              dataKey="id"
+              [showClear]="true"
+              appendTo="body"
+              styleClass="font-bold"
+            >
+              <ng-template
+                pTemplate="item"
+                let-address
+              >
+                <div style="overflow: hidden; text-overflow: ellipsis">
+                  {{ address.pre }} {{ address.name }}
+                </div>
+              </ng-template>
+              <ng-template
+                pTemplate="selectedItem"
+                let-item
+              >
+                <div style="overflow: hidden; text-overflow: ellipsis">
+                  {{ item.pre }}
+                  {{ item.name }}
+                </div>
+              </ng-template>
+            </p-dropdown>
+          </div>
+          <div class="field col">
+            <input
+              pInputText
+              placeholder="Số nhà..."
+              class="text-overflow-ellipsis font-bold"
+              formControlName="temporaryAddress"
+            />
+          </div>
+        </div>
+        <div class="field">
+          <label for="">Kỹ năng sở trường</label>
+          <p-multiSelect
+            [(ngModel)]="strongPoints"
+            optionLabel="name"
+            optionValue="id"
+            [options]="skills"
+            [ngModelOptions]="{ standalone: true }"
+            accesskey="id"
+            emptyFilterMessage="Không có kỹ năng phù hợp"
+            emptyMessage="Không có kỹ năng"
+            display="chip"
+            [disabled]="readonly"
+            (ngModelChange)="fieldChange('strongPointIds')"
+          ></p-multiSelect>
+        </div>
+      </div>
+    </p-card>
+    <ng-container *ngIf="member && member.id">
+      <div class="flex my-3 justify-content-between">
+        <div>
+          <p-dropdown
+            [options]="events"
+            [(ngModel)]="selectedEvent"
+            (onShow)="loadEvents()"
+            emptyMessage="Không có đại lễ"
+            emptyFilterMessage="Không tìm thấy đại lễ phù hợp"
+            [filter]="true"
+            filterBy="name"
+            [showClear]="true"
+            placeholder="Chọn đại lễ"
+            appendTo="body"
+            styleClass="font-bold"
+          >
+            <ng-template
+              pTemplate="item"
+              let-event
+            >
+              <div
+                style="
+                  max-width: 200px;
+                  overflow: hidden;
+                  text-overflow: ellipsis;
+                "
+              >
+                {{ event.name }}
+              </div>
+            </ng-template>
+            <ng-template
+              pTemplate="selectedItem"
+              let-item
+            >
+              <div style="overflow: hidden; text-overflow: ellipsis">
+                {{ item.pre }}
+                {{ item.name }}
+              </div>
+            </ng-template>
+          </p-dropdown>
+        </div>
+      </div>
+      <app-event-register
+        *ngIf="selectedEvent"
+        [event]="selectedEvent"
+        [memberId]="member.id"
+        [register]="register"
+        (registerChange)="registerUpdated($event)"
+        [departments]="departments"
+      ></app-event-register>
+    </ng-container>
+  </div>
+</div>

@@ -1,0 +1,159 @@
+<p-toolbar>
+  <ng-template pTemplate="left">
+    <app-event-dropdown
+      [options]="this.events"
+      [(value)]="this.selectedEvent"
+      [autoLoad]="false"
+      class="mr-3"
+    >
+    </app-event-dropdown>
+
+    <p-dropdown
+      class="mr-3"
+      [style]="{ 'min-width': '200px' }"
+      [options]="this.departmentDetails"
+      [(ngModel)]="this.selectedDeptDetail"
+      [showClear]="true"
+      [filter]="true"
+      filterBy="name, department.code"
+      optionLabel="department.name"
+      emptyFilterMessage="Không tìm thấy ban phù hợp"
+      emptyMessage="Đại lễ chưa có ban được tạo"
+      placeholder="Ban đại lễ"
+    ></p-dropdown>
+    <p-splitButton
+      icon="fa-solid fa-plus"
+      label="Thêm mới ({{ selectedAreas.length }})"
+      [model]="btnItems"
+      (onClick)="add()"
+      styleClass="p-button-raised p-button-text white-space-nowrap"
+    ></p-splitButton>
+  </ng-template>
+  <ng-template pTemplate="right">
+    <!-- <p-dropdown
+          [options]="statuses"
+          (onChange)="dt1.filterGlobal($event.value, FilterMatchMode.EQUALS)"
+          #dropdown
+          [style]="{ width: '200px', 'max-width' : '45vw' }"
+          placeholder="Tất cả"
+          [showClear]="true"
+          optionValue="value"
+          optionLabel="name"
+          class="mr-3"
+        >
+        </p-dropdown> -->
+    <span
+      class="p-input-icon-left"
+      style="width: 200px; max-width: 45vw"
+    >
+      <i class="pi pi-search"></i>
+      <input
+        class="w-100"
+        pInputText
+        type="text"
+        #searchInput
+        (input)="dt1.filterGlobal(searchInput.value, 'contains')"
+        placeholder="Từ khóa tìm kiếm"
+      />
+    </span>
+  </ng-template>
+</p-toolbar>
+<small>Giữ phím Ctrl hoặc Meta để chọn sắp xếp theo nhiều cột</small>
+<p-table
+  #dt1
+  [loading]="loading"
+  [scrollable]="true"
+  scrollHeight="calc(100vh - {{ tableOffsetTop }}px)"
+  [value]="areas"
+  sortMode="multiple"
+  [(selection)]="selectedAreas"
+  dataKey="id"
+  [paginator]="true"
+  [selectionPageOnly]="true"
+  [rows]="10"
+  styleClass="p-datatable-striped"
+  [rowsPerPageOptions]="[10, 25, 50]"
+  [globalFilterFields]="['name', 'departmentDetail.name', 'code']"
+>
+  <ng-template pTemplate="header">
+    <tr>
+      <th style="width: 4rem">
+        <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+      </th>
+      <th pSortableColumn="name">
+        Khu vực <p-sortIcon field="name"></p-sortIcon>
+      </th>
+      <th pSortableColumn="departmentDetailId">
+        Ban <p-sortIcon field="departmentDetailId"></p-sortIcon>
+      </th>
+      <th pSortableColumn="actualQuantity">
+        Nhân sự <p-sortIcon field="actualQuantity"></p-sortIcon>
+      </th>
+      <th pSortableColumn="note">
+        Ghi chú <p-sortIcon field="note"></p-sortIcon>
+      </th>
+      <th style="width: 4rem"></th>
+    </tr>
+  </ng-template>
+  <ng-template
+    pTemplate="body"
+    let-item
+  >
+    <tr class="cursor-pointer">
+      <td>
+        <p-tableCheckbox [value]="item"></p-tableCheckbox>
+      </td>
+      <td (click)="showDetail(item)">
+        <div class="font-semibold">
+          {{ item.name }}
+        </div>
+      </td>
+      <td (click)="showDetail(item)">
+        {{ item.departmentDetail?.department?.name }}
+      </td>
+      <td (click)="showDetail(item)">
+        {{ item.actualQuantity }}/
+        <span *ngIf="item.requiredQuantity">{{ item.requiredQuantity }}</span>
+        <i
+          *ngIf="!item.requiredQuantity || item.requiredQuantity < 0"
+          class="fa-solid fa-infinity"
+        ></i>
+      </td>
+      <td (click)="showDetail(item)">{{ item.note }}</td>
+      <td>
+        <button
+          (click)="edit(item)"
+          pButton
+          pRipple
+          type="button"
+          icon="pi pi-pencil"
+          class="p-button-rounded p-button-text"
+        ></button>
+      </td>
+    </tr>
+  </ng-template>
+</p-table>
+
+<p-dialog
+  header="Thông tin khu vực"
+  [modal]="true"
+  [maximizable]="true"
+  [style]="{ width: '75vw' }"
+  [(visible)]="formVisible"
+  appendTo="body"
+  [scrollLeft]="true"
+  [blockScroll]="true"
+  [closable]="true"
+  [breakpoints]="{ '576px': '100vw' }"
+  [resizable]="true"
+>
+  <div class="">
+    <app-area
+      [departments]="departmentDetails"
+      [value]="selectedArea"
+      (onSubmit)="save($event)"
+    ></app-area>
+  </div>
+</p-dialog>
+
+<p-dialog> </p-dialog>

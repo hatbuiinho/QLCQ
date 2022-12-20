@@ -1,0 +1,150 @@
+.pageA4Portrait {
+  width: 21cm;
+  height: 29.7cm;
+  background: #59c173;
+  /* fallback for old browsers */
+  /* Chrome 10-25, Safari 5.1-6 */
+  background: -webkit-gradient(linear, left top, right top, from(#5d26c1), color-stop(#a17fe0), to(#59c173));
+  background: linear-gradient(to right, #5d26c1, #a17fe0, #59c173);
+  /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+  margin: 0 auto;
+  border: 1px solid white;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: start;
+      -ms-flex-pack: start;
+          justify-content: start;
+  padding-top: 1.5rem;
+  position: relative;
+}
+
+.pageA4Portrait .card {
+  position: relative;
+  width: 190mm;
+  height: 55mm;
+  margin-bottom: 5px;
+  padding-top: 10px;
+  padding-left: 10px;
+  font-family: "Times New Roman", Times, serif;
+}
+
+.pageA4Portrait .card__img {
+  position: absolute;
+  width: 100%;
+  top: 0;
+  left: 0;
+  z-index: 1;
+  -o-object-fit: cover;
+     object-fit: cover;
+}
+
+.pageA4Portrait .card__code {
+  position: absolute;
+  top: 8%;
+  left: 25%;
+  z-index: 2;
+  color: black;
+  font-size: 13px;
+}
+
+.pageA4Portrait .card__name-container {
+  position: absolute;
+  top: 24%;
+  bottom: 19%;
+  left: 1%;
+  right: 64%;
+  z-index: 5;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+}
+
+.pageA4Portrait .card__name {
+  color: black;
+  font-size: 20px;
+  font-weight: 700;
+  text-align: center;
+  z-index: 4;
+}
+
+.pageA4Portrait .card__religiousName {
+  font-size: 23px;
+}
+
+.pageA4Portrait .card__avatar {
+  position: absolute;
+  top: 25%;
+  left: 37%;
+  height: 108px;
+  width: 81px;
+  z-index: 2;
+  -o-object-fit: cover;
+     object-fit: cover;
+  border: 1px solid gray;
+}
+
+.pageA4Portrait .card__organzationStucture {
+  position: absolute;
+  top: 85%;
+  left: 25%;
+  z-index: 3;
+  color: white;
+  font-weight: bold;
+  font-size: 13px;
+}
+
+.pageA4Portrait .card__qrcode {
+  position: absolute;
+  top: 44.5%;
+  right: 2%;
+  z-index: 4;
+}
+
+.pageA4Portrait .no {
+  color: white;
+  position: absolute;
+  bottom: 5px;
+  right: 50%;
+  z-index: 10;
+  background-color: rgba(255, 0, 0, 0.4);
+  height: 20px;
+  width: 50px;
+  text-align: center;
+}
+
+.text-white {
+  color: white;
+}
+
+.text-black {
+  color: black;
+}
+
+@page {
+  size: unset;
+  margin: 0;
+}
+
+@media print {
+  html,
+  body {
+    height: auto;
+    overflow: hidden;
+  }
+}
+/*# sourceMappingURL=print-card.component.css.map */

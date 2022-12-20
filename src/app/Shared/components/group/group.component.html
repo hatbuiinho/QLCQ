@@ -1,0 +1,92 @@
+<form
+  [formGroup]="form"
+  class="p-fluid"
+  (submit)="onSubmit()"
+>
+  <div class="grid">
+    <div class="field col">
+      <label for="dept">Ban đại lễ</label>
+      <p-dropdown
+        [options]="departmentDetails"
+        optionValue="id"
+        optionLabel="department.name"
+        [(ngModel)]="departmentDetailId"
+        [ngModelOptions]="{ standalone: true }"
+        emptyMessage="Đại lễ hiện không có ban nào"
+        emptyFilterMessage="Không tìm thấy ban phù hợp"
+        appendTo="body"
+      >
+      </p-dropdown>
+    </div>
+    <div class="field col">
+      <label for="dept">Khu vực</label>
+      <p-dropdown
+        [options]="areas"
+        optionValue="id"
+        optionLabel="name"
+        formControlName="areaId"
+        [emptyMessage]="
+          departmentDetailId
+            ? 'Hãy chọn một ban'
+            : 'Ban hiện chưa có khu vực nào'
+        "
+        emptyFilterMessage="Không tìm thấy khu vực phù hợp"
+        [filter]="true"
+        filterBy="name,code"
+        appendTo="body"
+      >
+      </p-dropdown>
+    </div>
+  </div>
+  <div class="grid">
+    <div class="field col">
+      <label for="name">Tên nhóm</label>
+      <input
+        type="text"
+        id="name"
+        formControlName="name"
+        pInputText
+      />
+      <small
+        *ngIf="form.controls['name'].invalid"
+        class="p-error"
+        >Tên nhóm không được để trống!</small
+      >
+    </div>
+    <div class="field col">
+      <label for="code">Mã nhóm</label>
+      <input
+        type="text"
+        id="code"
+        formControlName="code"
+        pInputText
+      />
+    </div>
+  </div>
+  <div class="field">
+    <label for="note">Ghi chú</label>
+    <input
+      type="text"
+      id="note"
+      formControlName="note"
+      pInputText
+    />
+  </div>
+  <div class="field">
+    <label for="description">Mô tả</label>
+    <textarea
+      type="text"
+      id="description"
+      formControlName="description"
+      pInputTextarea
+      [autoResize]="true"
+      [rows]="3"
+      style="min-height: 5rem"
+    ></textarea>
+  </div>
+  <input
+    type="submit"
+    id="submit"
+    class="hidden"
+  />
+</form>

@@ -1,0 +1,52 @@
+.border-noround input {
+  border-radius: 0 !important;
+}
+
+.clickable:hover {
+  background-color: #dee2e6;
+  cursor: pointer;
+}
+
+.zoom-out {
+  zoom: 0.75;
+  -ms-zoom: 0.75;
+}
+
+input.ng-touched.ng-invalid {
+  border-color: #e24c4c;
+}
+
+.p-fluid .field.col {
+  min-width: 200px;
+}
+
+.w-1 {
+  width: 1%;
+}
+
+@media screen and (max-width: 925px) {
+  .p-toolbar-group-left,
+  .p-toolbar-group-right {
+    display: flex;
+    justify-content: space-between !important;
+    width: 100%;
+  }
+  .p-toolbar-group-left {
+    margin-bottom: 1rem;
+  }
+}
+
+@media print {
+  html,
+  body {
+    min-width: unset !important;
+    zoom-out: 1 !important;
+    zoom: 1 !important;
+  }
+}
+
+/* override */
+.p-dialog-maximized[pfocustrap] {
+  height: 100% !important;
+  width: 100% !important;
+}

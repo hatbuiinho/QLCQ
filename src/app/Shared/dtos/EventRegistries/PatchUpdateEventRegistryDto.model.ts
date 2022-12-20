@@ -1,0 +1,48 @@
+import { MoveType } from '../Enums/MoveType.enum';
+import { PositionType } from '../Enums/PositionType.enum';
+import { RegisterRole } from '../Enums/RegisterRole.enum';
+import { CarBookingType } from '../Enums/CarBookingType.enum';
+import { RegisterType } from '../Enums/RegisterType.enum';
+import { ClothingSize } from '../Enums/ClothingSize.enum';
+import { PrintStatus } from '../Enums/PrintStatus.enum';
+import { ReceiveCardStatus } from '../Enums/ReceiveCardStatus.enum';
+import { ContactStatusType } from '../Enums/ContactStatusType.enum';
+import { ReceiveClothStatus } from '../Enums/ReceiveClothStatus.enum';
+
+export interface PatchUpdateEventRegistryDto {
+  note?: string;
+  code?: string;
+  companyNameEN?: string;
+  startPlaneCode?: string;
+  companyNameVIE?: string;
+  returnPlaneCode?: string;
+  otherStartAddress?: string;
+  otherLeaveAddress?: string;
+  eventRegistryPageId?: string;
+  endDate?: Date;
+  eventId?: number;
+  moveType?: MoveType;
+  position?: PositionType;
+  leaderId?: string;
+  startDate?: Date;
+  startTimeId?: number;
+  leaveTimeId?: number;
+  printStatus?: PrintStatus;
+  registerRole?: RegisterRole;
+  registerType?: RegisterType;
+  clothingSize?: ClothingSize;
+  contactStatus?: ContactStatusType;
+  otherStartTime?: Date;
+  otherLeaveTime?: Date;
+  carBookingType?: CarBookingType;
+  refugeRegistry?: boolean;
+  wishDepartmentId?: number;
+  receiveCardStatus?: ReceiveCardStatus;
+  receiveClothStatus?: ReceiveClothStatus;
+  receivedRefugeCert?: boolean;
+  certificateRegistry?: boolean;
+  receiveCardAddressId?: number;
+  receiveClothQuantity?: number;
+  registers?: string[];
+  expDepartmentIds?: number[];
+}

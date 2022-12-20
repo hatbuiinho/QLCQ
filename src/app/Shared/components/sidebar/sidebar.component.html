@@ -1,0 +1,228 @@
+<div class="main-sidebar sidebar-style-2">
+  <aside id="sidebar-wrapper">
+    <div class="sidebar-brand">
+      <a routerLink="/">Đăng ký đại lễ</a>
+    </div>
+    <div class="sidebar-brand sidebar-brand-sm">
+      <a routerLink="/">CTN</a>
+    </div>
+    <ul class="sidebar-menu">
+      <!-- <li class="dropdown">
+        <a
+          href="#"
+          data-toggle="dropdown"
+          class="nav-link dropdown-toggle nav-link-lg nav-link-user"
+        >
+          <p-image
+            height="50"
+            width="50"
+            alt="image"
+            [src]="member.avatarPath ?? 'assets/img/avatar/avatar-1.png' | src"
+            *ngIf="member"
+            (onImageError)="member.avatarPath = undefined"
+            imageClass="rounded-circle mr-1"
+          ></p-image>
+          <div
+            class="d-sm-none d-lg-inline-block font-bold flex-grow-1 overflow-hidden text-overflow-ellipsis"
+          >
+            {{ member?.religiousName ?? member?.fullName }}
+          </div></a
+        >
+        <div class="dropdown-menu dropdown-menu-right">
+          <a
+            routerLink="user/profile"
+            class="dropdown-item has-icon"
+          >
+            <i class="far fa-user"></i> Hồ sơ
+          </a>
+          <a
+            routerLink="user/settings"
+            class="dropdown-item has-icon"
+          >
+            <i class="fas fa-cog"></i> Cài đặt
+          </a>
+          <div class="dropdown-divider"></div>
+          <a
+            (click)="logout()"
+            routerLink="/auth/login"
+            class="dropdown-item has-icon text-danger"
+          >
+            <i class="fas fa-sign-out-alt"></i> Đăng xuất
+          </a>
+        </div>
+      </li> -->
+      <li class="nav-item">
+        <a
+          routerLink="/"
+          class="nav-link"
+          ><i class="ion fa-solid fa-gauge-high"></i><span>Dashboard</span></a
+        >
+      </li>
+      <li class="menu-header">Quản lý công quả đại lễ</li>
+      <li routerLinkActive="active">
+        <a
+          class="nav-link"
+          routerLink="event/registers"
+          ><i class="ion fa-solid fa-users"></i>
+          <span>Danh sách thành viên</span></a
+        >
+      </li>
+
+      <li
+        class="nav-item dropdown"
+        routerLinkActive="active"
+      >
+        <a
+          href="#"
+          class="nav-link has-dropdown"
+          ><i class="ion pi pi-file-edit"></i>
+          <span>Quản lý trang đăng ký</span></a
+        >
+        <ul class="dropdown-menu">
+          <li routerLinkActive="active">
+            <a
+              class="nav-link"
+              routerLink="event/pages"
+              ><i class="ion fa-solid fa-file-pen"></i>
+              <span>Trang đăng ký</span></a
+            >
+          </li>
+          <li routerLinkActive="active">
+            <a
+              class="nav-link"
+              routerLink="event/start-address"
+              ><i class="ion fa-solid fa-map-location-dot"></i>
+              <span>Điểm xuất phát</span></a
+            >
+          </li>
+          <li routerLinkActive="active">
+            <a
+              class="nav-link"
+              routerLink="event/card-address"
+              ><i class="ion fa-regular fa-address-card"></i>
+              <span>Điểm nhận thẻ</span></a
+            >
+          </li>
+          <li routerLinkActive="active">
+            <a
+              class="nav-link"
+              routerLink="event/skills"
+              ><i class="ion fa-solid fa-medal"></i>
+              <span>Quản lý kỹ năng</span></a
+            >
+          </li>
+        </ul>
+      </li>
+
+      <li
+        class="nav-item dropdown"
+        routerLinkActive="active"
+      >
+        <a
+          href="#"
+          class="nav-link has-dropdown"
+          ><i class="ion fa-solid fa-people-roof"></i>
+          <span>Quản lý phân ban</span></a
+        >
+        <ul class="dropdown-menu">
+          <!-- <li routerLinkActive="active">
+            <a
+              class="nav-link"
+              routerLink="event/departments"
+              ><i class="ion fa-solid fa-people-roof"></i>
+              <span>QL Ban</span></a
+            >
+          </li>
+          <li routerLinkActive="active">
+            <a
+              class="nav-link"
+              routerLink="event/areas"
+              ><i class="ion fa-regular fa-clone"></i>
+              <span>QL Khu vực</span></a
+            >
+          </li>
+          <li routerLinkActive="active">
+            <a
+              class="nav-link"
+              routerLink="event/groups"
+              ><i class="ion fa-solid fa-user-group"></i>
+              <span>QL Nhóm</span></a
+            >
+          </li> -->
+
+          <li routerLinkActive="active">
+            <a
+              class="nav-link"
+              routerLink="event/departments-assignment"
+            >
+              <i class="fa-solid fa-people-group"></i><span>Ban</span></a
+            >
+          </li>
+          <li routerLinkActive="active">
+            <a
+              class="nav-link"
+              routerLink="event/areas-assignment"
+            >
+              <i class="fa-solid fa-users-rectangle"></i>
+              <span>Khu vực</span></a
+            >
+          </li>
+          <li routerLinkActive="active">
+            <a
+              class="nav-link"
+              routerLink="event/groups-assignment"
+            >
+              <i class="fa-solid fa-user-group"></i> <span>Nhóm</span></a
+            >
+          </li>
+        </ul>
+      </li>
+
+      <!-- <li class="menu-header">Quản lý phân công đại lễ</li> -->
+
+      <li class="menu-header">Thống kê</li>
+      <li>
+        <a
+          class="nav-link"
+          routerLink="event/statistic/start"
+          ><i class="ion fa-solid fa-earth-asia"></i>
+          <span>Theo điểm xuất phát</span></a
+        >
+      </li>
+      <li>
+        <a
+          class="nav-link"
+          routerLink="event/statistic/status"
+          ><i class="ion fa-solid fa-chart-simple"></i>
+          <span>Theo trạng thái</span></a
+        >
+      </li>
+
+      <li class="menu-header">Quản lý thông tin</li>
+      <li routerLinkActive="active">
+        <a
+          class="nav-link"
+          routerLink="users"
+          ><i class="ion fa-solid fa-users-gear"></i> <span>Tài khoản</span></a
+        >
+      </li>
+      <li routerLinkActive="active">
+        <a
+          class="nav-link"
+          routerLink="members"
+          ><i class="ion fa-solid fa-users-line"></i> <span>Phật tử</span></a
+        >
+      </li>
+    </ul>
+
+    <div class="mt-4 mb-4 p-3 hide-sidebar-mini">
+      <a
+        href="https://docs.google.com/document/d/1pmM1DOH1duPohf3emqUDDAA6mUQYnFDsXHZ54vMf_lw/edit#"
+        target="_blank"
+        class="btn btn-primary btn-lg btn-block btn-icon-split"
+      >
+        <i class="fas fa-rocket"></i> Hướng dẫn
+      </a>
+    </div>
+  </aside>
+</div>

@@ -1,0 +1,535 @@
+<p-dialog
+  #dialog
+  [header]="headerTitle"
+  [modal]="true"
+  [maximizable]="true"
+  [(visible)]="isVisible"
+  appendTo="body"
+  [scrollLeft]="true"
+  [blockScroll]="true"
+  [closable]="true"
+  (onHide)="onHide()"
+  [style]="{ 'min-height': '90vh', 'min-width': '90vw' }"
+  [dismissableMask]="true"
+>
+  <div>
+    <p-toolbar #toolbar>
+      <div
+        class="grid gap-3 align-items-center w-100"
+        [class]="
+          isViewOnly || fromRegisterList
+            ? 'justify-content-end'
+            : 'justify-content-between'
+        "
+      >
+        <!-- left -->
+        <div class="flex gap-3 flex-wrap">
+          <app-print-card [registers]="selectedRegisters"></app-print-card>
+          <p-selectButton
+            *ngIf="!fromRegisterList"
+            [options]="assignStatusOptions"
+            [(ngModel)]="assignStatus"
+            optionLabel="label"
+            (onChange)="refresh()"
+            optionValue="value"
+          ></p-selectButton>
+          <p-splitButton
+            #assign
+            *ngIf="
+              assignStatus !== StatusType.ChuaDuyet &&
+              !isViewOnly &&
+              !fromRegisterList
+            "
+            [style]="{ 'white-space': 'nowrap' }"
+            icon="pi pi-bolt"
+            [label]="
+              selectedRegisters.length
+                ? 'Thao tác' + ' (' + selectedRegisters.length + ')'
+                : 'Thao tác'
+            "
+            (onClick)="assign.onDropdownButtonClick($event)"
+            (onDropdownClick)="renderPositionOption(true)"
+            [model]="positionOptions"
+            styleClass="p-button-success"
+          ></p-splitButton>
+
+          <p-button
+            *ngIf="assignStatus === StatusType.ChuaDuyet"
+            #approve
+            (onClick)="changeStatus(StatusType.DaDuyet)"
+            [style]="{ 'white-space': 'nowrap' }"
+            [label]="
+              selectedRegisters.length
+                ? 'Duyệt' + ' (' + selectedRegisters.length + ')'
+                : 'Duyệt'
+            "
+            styleClass="p-button-success"
+            icon="pi pi-verified"
+          ></p-button>
+          <p-button
+            *ngIf="assignStatus === StatusType.DaDuyet"
+            #approve
+            (onClick)="openConfirmRemoveAssign()"
+            [style]="{ 'white-space': 'nowrap' }"
+            [label]="
+              selectedRegisters.length
+                ? 'Xóa' + ' (' + selectedRegisters.length + ')'
+                : 'Xóa'
+            "
+            styleClass="p-button-danger"
+            icon="pi pi-eraser"
+          ></p-button>
+
+          <!-- (onClick)="openChangeDepartment()" -->
+          <p-button
+            *ngIf="assignStatus === StatusType.DaDuyet || fromRegisterList"
+            #changeDepartment
+            (click)="openChangeDepartment($event)"
+            [style]="{ 'white-space': 'nowrap' }"
+            [label]="
+              selectedRegisters.length
+                ? fromRegisterList
+                  ? 'Phân ban'
+                  : 'Luân chuyển' + ' (' + selectedRegisters.length + ')'
+                : fromRegisterList
+                ? 'Phân ban'
+                : 'Luân chuyển'
+            "
+            styleClass="p-button-info"
+            icon="pi pi-arrow-right-arrow-left"
+          ></p-button>
+
+          <p-toggleButton
+            *ngIf="!fromRegisterList && !isViewOnly && !isApprove"
+            [offIcon]="'pi pi-filter-slash'"
+            [offLabel]="'Bộ lọc'"
+            [onIcon]="'pi pi-filter'"
+            [onLabel]="'Bộ lọc'"
+            [(ngModel)]="showFilter"
+          ></p-toggleButton>
+          <!-- (onClick)="approve.onDropdownButtonClick($event)" -->
+        </div>
+
+        <!-- right -->
+        <div
+          [class]="
+            showFilter || fromRegisterList ? 'flex flex-wrap gap-3' : 'hidden'
+          "
+        >
+          <span
+            *ngIf="
+              assignType === AssignType.DEPARTMENT &&
+              !isViewOnly &&
+              assignStatus != StatusType.DaDuyet
+            "
+            class="p-float-label"
+          >
+            <p-dropdown
+              [(ngModel)]="wishDepartmentId"
+              [options]="departments"
+              (onChange)="refresh()"
+              placeholder="Ban nguyện vọng"
+              [showClear]="true"
+              optionValue="department.id"
+              optionLabel="department.name"
+              [filter]="true"
+              filterBy="department.name"
+            >
+            </p-dropdown>
+            <label for="dropdown">Ban nguyện vọng</label>
+          </span>
+
+          <!-- <p-dropdown
+            *ngIf="assignType === AssignType.DEPARTMENT && !isViewOnly"
+            [options]="departments"
+            optionValue="id"
+            optionLabel="department.name"
+            [(ngModel)]="filterDepartment"
+            [showClear]="true"
+            (onChange)="refresh()"
+            placeholder="Ban Đại lễ"
+            (onChange)="areas = []"
+            (onChange)="groups = []"
+            emptyFilterMessage="Không có ban phù hợp"
+            emptyMessage="Không có ban phù hợp"
+            appendTo="body"
+            [filter]="true"
+            filterBy="department.name"
+          ></p-dropdown> -->
+
+          <!-- <p-dropdown
+            *ngIf="assignType === AssignType.DEPARTMENT && !isViewOnly"
+            [options]="assignStatusOptions"
+            optionValue="value"
+            optionLabel="label"
+            [(ngModel)]="assignStatus"
+            [showClear]="true"
+            (onChange)="refresh()"
+            placeholder="Trạng thái"
+            appendTo="body"
+          ></p-dropdown> -->
+
+          <div style="min-width: 100px">
+            <span class="p-input-icon-left">
+              <i class="pi pi-search"></i>
+              <input
+                [(ngModel)]="memberFilter"
+                class="w-100"
+                pInputText
+                type="text"
+                #searchInput
+                (input)="
+                  registerTable.filterGlobal(searchInput.value, 'contains')
+                "
+                placeholder="Tên thành viên"
+              />
+              <!-- (change)="refresh()" -->
+
+              <!-- (input)="registerTable.filterGlobal(searchInput.value, 'contains')" -->
+            </span>
+          </div>
+        </div>
+
+        <!-- <label for="moveType">Nhóm</label> -->
+      </div>
+    </p-toolbar>
+
+    <p-table
+      #registerTable
+      [loading]="loading"
+      [scrollable]="true"
+      [lazy]="!fromRegisterList"
+      (onLazyLoad)="loadRegisters($event)"
+      [value]="registers"
+      sortMode="multiple"
+      [(selection)]="selectedRegisters"
+      dataKey="id"
+      [paginator]="true"
+      [rows]="10"
+      styleClass="p-datatable-striped"
+      [rowsPerPageOptions]="[10, 25, 50, 100, 150, 200]"
+      [totalRecords]="totalRecords"
+      [lazyLoadOnInit]="false"
+      currentPageReportTemplate="Từ {first} đến {last} của {totalRecords} đăng ký"
+      [globalFilterFields]="['member.fullName', 'member.religiousName']"
+      paginatorPosition="top"
+      [showJumpToPageDropdown]="true"
+      [showPageLinks]="false"
+    >
+      <ng-template pTemplate="header">
+        <tr>
+          <th style="width: 4rem">
+            <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+          </th>
+          <th>Ảnh thẻ</th>
+          <th pSortableColumn="member.fullName">
+            Định danh <p-sortIcon field="member.fullName"></p-sortIcon>
+          </th>
+          <th pSortableColumn="wishDepartment.name">
+            Nguyện vọng
+            <p-sortIcon field="wishDepartment.name"></p-sortIcon>
+          </th>
+          <th>Kinh nghiệm</th>
+          <th pSortableColumn="departmentDetail.department.name,position">
+            Ban được phân
+            <p-sortIcon
+              field="departmentDetail.department.name,position"
+            ></p-sortIcon>
+          </th>
+          <th pSortableColumn="contactStatus">
+            Liên hệ <p-sortIcon field="contactStatus"></p-sortIcon>
+          </th>
+          <th
+            *ngIf="isViewOnly"
+            pSortableColumn="clothingSize"
+          >
+            Size áo
+          </th>
+          <th>Ghi chú</th>
+          <th style="width: 4rem"></th>
+        </tr>
+      </ng-template>
+      <ng-template
+        pTemplate="body"
+        let-register
+        let-rowIndex="rowIndex"
+      >
+        <tr
+          style="cursor: point"
+          [pSelectableRow]="register"
+          [pSelectableRowIndex]="rowIndex"
+        >
+          <td>
+            <p-tableCheckbox [value]="register"></p-tableCheckbox>
+          </td>
+          <td>
+            <p-image
+              [imageStyle]="{
+                height: '5rem',
+                width: '5rem',
+                'object-fit': 'cover'
+              }"
+              [src]="
+                register.member.avatarPath ?? 'assets/img/avatar/avatar-1.png'
+                  | src
+              "
+              (onImageError)="register.member.avatarPath = undefined"
+              alt="Avatar"
+              [preview]="register.avatarPath"
+              appendTo="body"
+            ></p-image>
+          </td>
+          <td>
+            <span class="font-semibold">{{ register?.member?.fullName }}</span>
+            <br />
+            <span>{{ register?.member?.religiousName }}</span>
+          </td>
+          <td>
+            <p-tag
+              *ngIf="register?.wishDepartment?.name"
+              [value]="register?.wishDepartment?.name"
+              [severity]="severities[2]"
+            ></p-tag>
+          </td>
+          <td>
+            <div class="flex gap-1 flex-wrap">
+              <ng-container *ngIf="register?.expDepartments; else noneExp">
+                <p-tag
+                  *ngFor="let expDpmt of register?.expDepartments"
+                  [severity]="severities[1]"
+                  [value]="expDpmt?.name"
+                ></p-tag>
+              </ng-container>
+            </div>
+            <ng-template #noneExp>Chưa có kinh nghiệm ban nào</ng-template>
+          </td>
+
+          <td>
+            <div class="flex flex-wrap gap-1">
+              <p-tag
+                *ngIf="
+                  register?.departmentDetail?.department?.name;
+                  else notAssign
+                "
+                [value]="register?.departmentDetail?.department?.name"
+                [icon]="StatusType.toTag(register.assignStatus).icon"
+                [severity]="StatusType.toTag(register.assignStatus).severity"
+                [title]="StatusType.toString(register.assignStatus)"
+              ></p-tag>
+              <p-tag *ngIf="register?.area?.name">
+                {{ register?.area?.name }}
+              </p-tag>
+              <p-tag *ngIf="register?.group?.name">
+                {{ register?.group?.name }}
+              </p-tag>
+            </div>
+            <ng-template #notAssign>Chưa phân</ng-template>
+            <div>
+              <small>{{ PositionType.toString(register.position) }}</small>
+            </div>
+          </td>
+          <td>
+            <p-inplace #contactStatusInplace>
+              <ng-template pTemplate="display">
+                <p-tag>{{
+                  ContactStatusType.toString(register.contactStatus)
+                }}</p-tag>
+              </ng-template>
+              <ng-template pTemplate="content">
+                <span class="p-float-label">
+                  <p-dropdown
+                    [options]="contactStatuses"
+                    optionValue="value"
+                    optionLabel="label"
+                    [(ngModel)]="register.contactStatus"
+                    (onChange)="
+                      save(register, contactStatusInplace, 'contactStatus')
+                    "
+                    placeholder="Liên hệ"
+                    [style]="{ width: '200px', 'max-width': '45vw' }"
+                  ></p-dropdown>
+                  <label for="dropdown">Liên hệ</label>
+                </span>
+              </ng-template>
+            </p-inplace>
+            <!-- <p *ngIf="register.contactStatus; else noContact">
+              <p-tag>{{
+                ContactStatusType.toString(register.contactStatus)
+              }}</p-tag>
+            </p>
+            <ng-template #noContact>
+              <small>Chưa liên hệ</small>
+            </ng-template> -->
+          </td>
+          <td *ngIf="isViewOnly">
+            <span *ngIf="register.clothingSize">{{
+              ClothingSize.toString(register.clothingSize)
+            }}</span>
+          </td>
+          <td>
+            <p-scrollPanel
+              [style]="{
+                'max-width': '200px',
+                'max-height': '150px',
+                'z-index': 0,
+                position: 'relative'
+              }"
+            >
+              {{ register.note }}
+            </p-scrollPanel>
+          </td>
+          <td>
+            <button
+              (click)="openMemberDetail(register)"
+              pButton
+              pRipple
+              type="button"
+              icon="pi pi-info-circle"
+              class="p-button-rounded p-button-text"
+            ></button>
+          </td>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td
+            [colSpan]="9"
+            [style]="{ 'text-align': 'center' }"
+          >
+            Chưa có đăng ký nào
+          </td>
+        </tr>
+      </ng-template>
+      <!-- <ng-template pTemplate=""> </ng-template> -->
+    </p-table>
+  </div>
+</p-dialog>
+
+<p-dialog
+  header="Thông tin thành viên"
+  [modal]="true"
+  [maximizable]="true"
+  [style]="{ width: '75vw' }"
+  [(visible)]="isOpenMemberDetail"
+  appendTo="body"
+  [scrollLeft]="true"
+  [blockScroll]="true"
+  [closable]="true"
+  [breakpoints]="{ '576px': '100vw' }"
+  [resizable]="true"
+>
+  <div class="">
+    <app-member
+      *ngIf="
+        selectedRegister &&
+        selectedRegister.member &&
+        event &&
+        isOpenMemberDetail
+      "
+      [member]="selectedRegister.member"
+      [register]="selectedRegister"
+      [event]="event"
+      [events]="[event]"
+      [readonly]="true"
+    ></app-member>
+  </div>
+</p-dialog>
+
+<!-- [header]="fromRegisterList ? 'Phân ban' : 'Chuyển'"
+  [modal]="true"
+  [style]="{ width: '350px', height: '80vh', 'min-height': '600px' }"
+  [(visible)]="isOpenChangeDepartment"
+  [closable]="true"
+  [breakpoints]="{ '576px': '100vw' }"
+  [breakpoints]="{ '576px': '100vw' }"
+  appendTo="body" -->
+<p-overlayPanel
+  [style]="{ width: '350px', 'over-flow-y': 'scroll' }"
+  #assignPanel
+>
+  <ng-template pTemplate>
+    <div class="flex flex-wrap gap-3 w-100 p-3 align-content-between h-100">
+      <div class="flex flex-wrap gap-3 w-100 mb-4">
+        <span class="p-float-label">
+          <p-dropdown
+            [options]="departments"
+            optionValue="id"
+            optionLabel="department.name"
+            [(ngModel)]="filterDepartment"
+            [showClear]="true"
+            (onChange)="onFilterDepartmentChange()"
+            placeholder="Ban Đại lễ"
+            (onChange)="areas = []"
+            (onChange)="groups = []"
+            (onChange)="filterArea = undefined"
+            (onChange)="filterGroup = undefined"
+            emptyFilterMessage="Không có ban phù hợp"
+            emptyMessage="Không có ban phù hợp"
+            appendTo="body"
+            [filter]="true"
+            filterBy="department.name"
+            [style]="{ width: '250px', 'max-width': '45vw' }"
+          ></p-dropdown>
+          <label for="dropdown">Ban Đại lễ</label>
+        </span>
+
+        <span class="p-float-label">
+          <p-dropdown
+            [options]="areas"
+            optionValue="id"
+            optionLabel="name"
+            [(ngModel)]="filterArea"
+            (onChange)="groups = []"
+            (onChange)="filterGroup = undefined"
+            placeholder="Khu vực"
+            (onShow)="loadAreas()"
+            emptyFilterMessage="Không có khu vực phù hợp"
+            emptyMessage="Không có khu vực phù hợp"
+            [style]="{ width: '250px', 'max-width': '45vw' }"
+            [showClear]="true"
+          ></p-dropdown>
+          <label for="dropdown">Khu vực</label>
+        </span>
+
+        <span class="p-float-label">
+          <p-dropdown
+            [options]="groups"
+            optionValue="id"
+            optionLabel="name"
+            [(ngModel)]="filterGroup"
+            [showClear]="true"
+            class="p-0"
+            placeholder="Nhóm"
+            (onShow)="loadGroups()"
+            emptyFilterMessage="Không có nhóm phù hợp"
+            emptyMessage="Không có nhóm phù hợp"
+            [style]="{ width: '250px', 'max-width': '45vw' }"
+          ></p-dropdown>
+          <label for="dropdown">Nhóm</label>
+        </span>
+      </div>
+      <div class="mt-8">
+        <p-splitButton
+          #assign
+          *ngIf="assignStatus !== StatusType.ChuaDuyet"
+          [style]="{ 'white-space': 'nowrap' }"
+          icon="pi pi-bolt"
+          [label]="
+            selectedRegisters.length
+              ? fromRegisterList
+                ? 'Phân ban'
+                : 'Chuyển' + ' (' + selectedRegisters.length + ')'
+              : fromRegisterList
+              ? 'Phân ban'
+              : 'Chuyển'
+          "
+          (onClick)="assign.onDropdownButtonClick($event)"
+          (onDropdownClick)="renderPositionOption(false)"
+          [model]="positionOptions"
+          styleClass="p-button-success"
+          [style]="{ width: '250px', 'max-width': '45vw' }"
+        ></p-splitButton>
+      </div>
+    </div>
+  </ng-template>
+</p-overlayPanel>

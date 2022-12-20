@@ -1,0 +1,150 @@
+<app-assigment-toolbar
+  #toolbar
+  [table]="dt1"
+  [(departmentDetails)]="departmentDetails"
+  [(selectedEvent)]="selectedEvent"
+  [(selectedDepartment)]="selectedDepartment"
+  [(isAssign)]="isOpenDialog"
+  [(dialogDepartment)]="dialogDepartment"
+  [assignType]="AssignType.DEPARTMENT"
+  [(isPropose)]="isPropose"
+  [(showFilter)]="showFilter"
+  [(isViewOnly)]="isViewOnly"
+  [(showCrudPopup)]="showCrudPopup"
+></app-assigment-toolbar>
+<p-table
+  #dt1
+  [loading]="loading"
+  [scrollable]="true"
+  scrollHeight="calc(100vh - {{ tableOffsetTop + 70 }}px)"
+  [value]="departmentDetails"
+  sortMode="multiple"
+  [(selection)]="selectedDepartment"
+  selectionMode="single"
+  dataKey="id"
+  [paginator]="true"
+  [selectionPageOnly]="true"
+  [rows]="10"
+  styleClass="p-datatable-striped"
+  [rowsPerPageOptions]="[10, 25, 50]"
+  [globalFilterFields]="[
+    'department.code',
+    'department.name',
+    'requiredQuantity',
+    'note',
+    'description',
+    'statusId'
+  ]"
+>
+  <ng-template pTemplate="header">
+    <tr>
+      <th style="width: 4rem">
+        <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+      </th>
+      <th pSortableColumn="departmentId">
+        Ban <p-sortIcon field="departmentId"></p-sortIcon>
+      </th>
+      <th></th>
+      <th style="width: 5rem"></th>
+    </tr>
+  </ng-template>
+  <ng-template
+    pTemplate="body"
+    let-dept
+  >
+    <tr
+      style="cursor: point"
+      [pSelectableRow]="dept"
+    >
+      <td>
+        <p-tableCheckbox [value]="dept"></p-tableCheckbox>
+      </td>
+      <td
+        (click)="openDepartmentMembers(dept)"
+        class="font-semibold"
+      >
+        {{ dept.department?.name }}<br />
+        {{ dept.department?.code }}
+      </td>
+      <td (click)="openDepartmentMembers(dept)">
+        <p class="font-semibold">
+          Số lượng:
+          <span
+            >{{ dept.actualQuantity }}/
+            <span *ngIf="dept.requiredQuantity">{{
+              dept.requiredQuantity
+            }}</span>
+            <i
+              *ngIf="!dept.requiredQuantity || dept.requiredQuantity < 0"
+              class="fa-solid fa-infinity"
+            ></i
+          ></span>
+        </p>
+        <p-scrollPanel
+          [style]="{
+            width: '100%',
+            'max-height': '150px',
+            'z-index': 0,
+            position: 'relative'
+          }"
+        >
+          <p *ngFor="let role of dept.roles">
+            <p-tag [severity]="severities[role.position % 3]">{{
+              PositionType.toString(role.position)
+            }}</p-tag>
+            {{ role.religiousName || role.fullName }}
+          </p>
+        </p-scrollPanel>
+      </td>
+      <td>
+        <div class="flex flex-wrap gap-2">
+          <!-- <button
+            (click)="openDepartmentMembers(dept)"
+            pButton
+            pRipple
+            type="button"
+            icon="pi pi-list"
+            class="p-button-rounded"
+            label="DS"
+          ></button> -->
+          <button
+            (click)="edit(dept)"
+            pButton
+            pRipple
+            type="button"
+            icon="pi pi-pencil"
+            class="p-button-rounded"
+          ></button>
+        </div>
+      </td>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="emptymessage">
+    <tr>
+      <td
+        [colSpan]="7"
+        [style]="{ 'text-align': 'center' }"
+      >
+        Chưa có ban nào
+      </td>
+    </tr>
+  </ng-template>
+  <!-- <ng-template pTemplate=""> </ng-template> -->
+</p-table>
+
+<app-department-assign-dialog
+  [(visible)]="isOpenDialog"
+  [department]="dialogDepartment"
+  [departments]="departmentDetails"
+  [event]="selectedEvent"
+  [isPropose]="isPropose"
+  [assignType]="AssignType.DEPARTMENT"
+  [isViewOnly]="isViewOnly"
+></app-department-assign-dialog>
+
+<app-department-detail-dialog
+  #departmentDetailDialog
+  (submit)="save($event)"
+  [departments]="remainDepartments"
+  [(visible)]="showCrudPopup"
+></app-department-detail-dialog>

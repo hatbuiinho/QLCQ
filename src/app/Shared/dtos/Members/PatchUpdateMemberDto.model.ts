@@ -1,0 +1,40 @@
+import { ClothingSize } from 'src/app/Shared/dtos/Enums/ClothingSize.enum';
+import { Gender } from '../Enums/Gender.enum';
+import { EventExp } from '../Enums/EventExp.enum';
+import { PhanLoaiThanhNien } from '../Enums/PhanLoaiThanhNien.enum';
+import { ReceiveClothStatus } from '../Enums/ReceiveClothStatus.enum';
+import { PrintStatus } from '../Enums/PrintStatus.enum';
+import { ReceiveCardStatus } from '../Enums/ReceiveCardStatus.enum';
+
+export interface PatchUpdateMemberDto {
+  work?: string;
+  email?: string;
+  fullName?: string;
+  avatarPath?: string;
+  phoneNumber?: string;
+  identityCard?: string;
+  religiousName?: string;
+  facebookAddress?: string;
+  identityCardImagePaths?: string[];
+  exps?: EventExp;
+  gender?: Gender;
+  ctnType?: PhanLoaiThanhNien;
+  dateOfBirth?: Date;
+  permanentWardId?: number;
+  temporaryWardId?: number;
+  permanentProvinceId?: number;
+  permanentDistrictId?: number;
+  temporaryProvinceId?: number;
+  temporaryDistrictId?: number;
+  organizationStructureId?: number;
+  strongPointIds?: number[];
+  clothingSize?: ClothingSize;
+  receiveClothStatus?: ReceiveClothStatus;
+  receiveCardStatus?:ReceiveCardStatus;
+  certificateRegistry?: boolean;
+  printStatus?: PrintStatus;
+  code?: string;
+  receiveClothQuantity?: number;
+  refugeRegistry?: boolean;
+  receivedRefugeCert?: boolean;
+}

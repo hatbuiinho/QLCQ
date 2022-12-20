@@ -1,0 +1,44 @@
+import { MoveType } from '../Enums/MoveType.enum';
+import { PrintStatus } from '../Enums/PrintStatus.enum';
+import { RegisterRole } from '../Enums/RegisterRole.enum';
+import { RegisterType } from '../Enums/RegisterType.enum';
+import { StatusType } from '../Enums/StatusType.enum';
+import { ClothingSize } from '../Enums/ClothingSize.enum';
+import { ReceiveClothStatus } from '../Enums/ReceiveClothStatus.enum';
+
+export interface EventRegistryLookUpDto {
+  pageSize?: number;
+  pageIndex?: number;
+  sortMode?: string;
+  memberName?: string;
+  includeArea?: boolean;
+  includeEvent?: boolean;
+  includeGroup?: boolean;
+  includeMember?: boolean;
+  includeLeader?: boolean;
+  includeDepartmnetDetail?: boolean;
+  includeAssignBy?: boolean;
+  sortBy?: any;
+  areaId?: number;
+  eventId?: number;
+  groupId?: number;
+  memberId?: string;
+  moveType?: MoveType;
+  startTime?: number;
+  leaveTime?: number;
+  isArrived?: boolean;
+  printStatus?: PrintStatus;
+  receiveClothStatus?: ReceiveClothStatus;
+  receivedCard?: boolean;
+  startAddress?: number;
+  leaveAddress?: number;
+  registerRole?: RegisterRole;
+  registerType?: RegisterType;
+  assignStatus?: StatusType;
+  clothingSize?: ClothingSize;
+  wishDepartment?: number;
+  receicardAddress?: number;
+  departmentDetailId?: number;
+  certificateRegistry?: boolean;
+  registers?: string[];
+}

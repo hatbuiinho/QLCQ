@@ -1,0 +1,153 @@
+#printable-content {
+  // display: none;
+  // width: 210mm;
+  // width: 21cm;
+}
+.pageA4Portrait {
+  width: 21cm;
+  height: 29.7cm;
+  background: #59c173; /* fallback for old browsers */
+  background: -webkit-linear-gradient(
+    to right,
+    #5d26c1,
+    #a17fe0,
+    #59c173
+  ); /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(
+    to right,
+    #5d26c1,
+    #a17fe0,
+    #59c173
+  ); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+  // padding: 5px;
+  margin: 0 auto;
+  border: 1px solid white;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: start;
+  padding-top: 1.5rem;
+
+  position: relative;
+
+  .card {
+    position: relative;
+    width: 190mm;
+    height: 55mm;
+    margin-bottom: 5px;
+    padding-top: 10px;
+    padding-left: 10px;
+    font-family: "Times New Roman", Times, serif;
+
+    &__img {
+      position: absolute;
+      width: 100%;
+      top: 0;
+      left: 0;
+      z-index: 1;
+      // padding-top: 10px;
+      // padding-left: 10px;
+      object-fit: cover;
+    }
+
+    &__code {
+      position: absolute;
+      top: 8%;
+      left: 25%;
+      z-index: 2;
+
+      color: black;
+      font-size: 13px;
+    }
+
+    &__name-container {
+      position: absolute;
+      top: 24%;
+      bottom: 19%;
+      left: 1%;
+      right: 64%;
+      z-index: 5;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    &__name {
+      color: black;
+      font-size: 20px;
+      font-weight: 700;
+      text-align: center;
+      z-index: 4;
+    }
+
+    &__religiousName {
+      font-size: 23px;
+    }
+
+    &__fullName {
+    }
+
+    &__avatar {
+      position: absolute;
+      top: 25%;
+      left: 37%;
+      height: 108px;
+      width: 81px;
+      z-index: 2;
+      object-fit: cover;
+      border: 1px solid gray;
+    }
+
+    &__organzationStucture {
+      position: absolute;
+      top: 85%;
+      left: 25%;
+      z-index: 3;
+
+      color: white;
+      font-weight: bold;
+      font-size: 13px;
+    }
+
+    &__qrcode {
+      position: absolute;
+      top: 44.5%;
+      right: 2%;
+      z-index: 4;
+    }
+  }
+
+  .no {
+    color: white;
+    position: absolute;
+    bottom: 5px;
+    right: 50%;
+    z-index: 10;
+    background-color: rgba(255, 0, 0, 0.4);
+    height: 20px;
+    width: 50px;
+    text-align: center;
+  }
+}
+
+.text-white {
+  color: white;
+}
+
+.text-black {
+  color: black;
+}
+
+@page {
+  size: unset;
+  margin: 0;
+}
+
+@media print {
+  html,
+  body {
+    height: auto;
+    overflow: hidden;
+  }
+}

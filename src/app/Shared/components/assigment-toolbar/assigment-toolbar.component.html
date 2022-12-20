@@ -1,0 +1,74 @@
+<p-toolbar
+  #toolbar
+  styleClass="gap-3 justify-content-between"
+>
+  <div class="flex flex-wrap gap-3">
+    <button
+      pButton
+      icon="pi pi-star"
+      class="p-button-success"
+      [label]="actionLabel"
+      (click)="handleProposePosition()"
+    ></button>
+    <!-- <button
+      *ngIf="isDepartment"
+      pButton
+      label="Phân ban"
+      (click)="handleAssign()"
+    ></button> -->
+    <button
+      pButton
+      (click)="openCrudPopup()"
+      [label]="'Thêm ' + targetLabel"
+      styleClass="p-button-raised p-button-text"
+      icon="pi pi-plus"
+    ></button>
+    <!-- (onClick)="add()" -->
+
+    <p-toggleButton
+      [offIcon]="'pi pi-filter-slash'"
+      [offLabel]="'Bộ lọc'"
+      [onIcon]="'pi pi-filter'"
+      [onLabel]="'Bộ lọc'"
+      [(ngModel)]="showFilter"
+    ></p-toggleButton>
+  </div>
+  <div [class]="showFilter ? 'flex flex-wrap gap-3' : 'hidden'">
+    <app-event-dropdown [(value)]="selectedEvent"></app-event-dropdown>
+    <p-dropdown
+      *ngIf="isArea || isGroup"
+      [options]="departmentDetails"
+      optionLabel="department.name"
+      [(ngModel)]="selectedDepartment"
+      (onChange)="loadAreas()"
+      placeholder="Ban đại lễ"
+      emptyMessage="Chưa có ban"
+      filterBy="department.name,department.code"
+      [filter]="true"
+    ></p-dropdown>
+
+    <p-dropdown
+      *ngIf="isGroup"
+      [options]="areas"
+      optionLabel="name"
+      [(ngModel)]="selectedArea"
+      placeholder="Khu vực"
+      (onChange)="loadGroups()"
+      emptyMessage="Chưa có khu vực"
+      filterBy="name,code"
+      [filter]="true"
+    ></p-dropdown>
+
+    <span class="p-input-icon-left">
+      <i class="pi pi-search"></i>
+      <input
+        [style]="{ 'min-width': '30px' }"
+        pInputText
+        type="text"
+        #searchInput
+        (input)="table.filterGlobal(searchInput.value, 'contains')"
+        placeholder="Từ khóa tìm kiếm"
+      />
+    </span>
+  </div>
+</p-toolbar>

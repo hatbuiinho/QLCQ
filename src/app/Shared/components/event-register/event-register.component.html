@@ -1,0 +1,448 @@
+<p-card *ngIf="register">
+  <p-tabView>
+    <p-tabPanel header="Đăng ký">
+      <div class="p-fluid">
+        <div class="field">
+          <label for="">Ban có kinh nghiệm</label>
+          <div class="flex">
+            <p-multiSelect
+              [options]="departments"
+              [(ngModel)]="expsDepartments"
+              defaultLabel="Không có kinh nghiệm"
+              optionLabel="name"
+              display="chip"
+              styleClass="border-noround-right"
+              class="flex-grow-1 w-1"
+            ></p-multiSelect>
+            <button
+              pButton
+              pRipple
+              class="border-noround-left p-button-success"
+              icon="pi pi-check"
+              (click)="updateExpDepts()"
+            ></button>
+          </div>
+        </div>
+        <div
+          class="field"
+          style="min-width: 200px"
+        >
+          <label for="status">Hình thức</label>
+          <div class="flex">
+            <p-dropdown
+              [options]="registerTypes"
+              optionLabel="label"
+              optionValue="value"
+              [(ngModel)]="register.registerType"
+              appendTo="body"
+              styleClass="border-noround-right"
+              class="flex-grow-1 w-1"
+            >
+            </p-dropdown>
+            <p-dropdown
+              [options]="[]"
+              optionLabel="member.fullName"
+              optionValue="id"
+              [(ngModel)]="register.leaderId"
+              [disabled]="register.registerType === RegisterType.Single"
+              appendTo="body"
+              styleClass="border-noround"
+              class="flex-grow-1 w-1"
+              [virtualScroll]="true"
+              [virtualScrollItemSize]="38"
+              [lazy]="true"
+              (onLazyLoad)="onLazyLoad($event)"
+              [virtualScrollOptions]="{
+                showLoader: true,
+                loading: registersLoading,
+                delay: 250
+              }"
+              emptyMessage="Không có thông tin đăng ký"
+            >
+              <ng-template
+                pTemplate="loader"
+                let-options="options"
+              >
+                <div
+                  class="flex align-items-center py-2 px-3"
+                  style="height: 38px"
+                >
+                  <p-skeleton
+                    [width]="options.even ? '60%' : '50%'"
+                    height="1rem"
+                  ></p-skeleton>
+                </div>
+              </ng-template>
+            </p-dropdown>
+            <button
+              pButton
+              pRipple
+              icon="pi pi-check"
+              class="border-noround-left p-button-success"
+              (onChange)="save('registerType', 'leaderId')"
+            ></button>
+          </div>
+        </div>
+        <div
+          *ngIf="register.leader"
+          class="field"
+        >
+          <label for="">Trưởng đoàn</label>
+          <div class="grid">
+            <div class="col">
+              <input
+                type="text"
+                pInputText
+                [ngModel]="register.leader.member?.fullName"
+                readonly
+              />
+            </div>
+            <div class="col">
+              <input
+                type="text"
+                pInputText
+                [ngModel]="register.leader.member?.religiousName"
+                readonly
+              />
+            </div>
+          </div>
+        </div>
+        <div class="grid">
+          <div class="field field col">
+            <label for="status">Liên hệ</label>
+            <p-dropdown
+              [options]="printStatuses"
+              optionLabel="label"
+              optionValue="value"
+              [(ngModel)]="register.printStatus"
+              (onChange)="save('printStatus')"
+              appendTo="body"
+            >
+            </p-dropdown>
+          </div>
+          <div class="field field col">
+            <label for="status">Trạng thái in thẻ</label>
+            <p-dropdown
+              [options]="printStatuses"
+              optionLabel="label"
+              optionValue="value"
+              [(ngModel)]="register.printStatus"
+              (onChange)="save('printStatus')"
+              appendTo="body"
+            >
+            </p-dropdown>
+          </div>
+          <div class="field field col">
+            <label for="status">Trạng thái nhận thẻ</label>
+            <p-dropdown
+              [options]="receiveCardStatuses"
+              optionLabel="label"
+              optionValue="value"
+              [(ngModel)]="register.receiveCardStatus"
+              (onChange)="save('receiveCardStatus')"
+              appendTo="body"
+              [pTooltip]="
+                (register.receivedClothAt | date : 'dd/MM/yy HH:mm') ?? ''
+              "
+            >
+            </p-dropdown>
+          </div>
+        </div>
+        <div class="grid">
+          <div class="field col">
+            <label for="">Size áo</label>
+            <p-dropdown
+              [options]="clothingSizes"
+              optionValue="value"
+              optionLabel="label"
+              placeholder="Không chọn"
+              [showClear]="true"
+              [(ngModel)]="register.clothingSize"
+              (onChange)="save('clothingSize')"
+              appendTo="body"
+            ></p-dropdown>
+          </div>
+          <div class="field col">
+            <label for="">Nhận áo</label>
+            <p-dropdown
+              [options]="receiveClothStatuses"
+              optionValue="value"
+              optionLabel="label"
+              [(ngModel)]="register.receiveClothStatus"
+              (onChange)="save('receiveClothStatus')"
+              appendTo="body"
+              ></p-dropdown>
+          </div>
+          <div class="field col">
+            <label for="">Số áo đã nhận</label>
+            <p-inputNumber
+              [(ngModel)]="register.receiveClothQuantity"
+              (onBlur)="save('receiveClothStatus')"
+            ></p-inputNumber>
+          </div>
+        </div>
+        <div class="grid grid-nogutter">
+          <div class="field col">
+            <label for="">Phương thức di chuyển : </label>
+            <p-dropdown
+              [options]="moveTypes"
+              optionLabel="label"
+              optionValue="value"
+              [(ngModel)]="register.moveType"
+              styleClass="{{
+                register.moveType === MoveType.WithCTN
+                  ? 'border-noround-right'
+                  : ''
+              }}"
+              appendTo="body"
+              ></p-dropdown>
+          </div>
+          <ng-container [ngSwitch]="register.moveType">
+            <ng-container *ngSwitchCase="MoveType.ByPlane">
+              <div class="grid grid-nogutter col-12">
+                <div class="field col">
+                  <label for="">Chuyến bay đến</label>
+                  <input
+                    type="text"
+                    pInputText
+                    [(ngModel)]="register.startPlaneCode"
+                    placeholder="Chưa có mã chuyến bay"
+                    class="border-noround-right"
+                  />
+                </div>
+                <div class="field col">
+                  <label for="">Giờ bay</label>
+                  <p-calendar
+                    [(ngModel)]="register.otherStartTime"
+                    placeholder="Chưa có giờ bay"
+                    [showTime]="true"
+                    [showClear]="true"
+                    class="border-noround"
+              dateFormat="dd/mm/yy"
+              appendTo="body"
+                  >
+                  </p-calendar>
+                </div>
+                <div
+                  class="field border-noround col-fixed flex align-items-end"
+                >
+                  <button
+                    pButton
+                    pRipple
+                    icon="pi pi-check"
+                    class="border-noround-left p-button-success"
+                    (click)="
+                      save('moveType', 'otherStartTime', 'startPlaneCode')
+                    "
+                  ></button>
+                </div>
+              </div>
+              <div class="grid grid-nogutter col-12">
+                <div class="field col">
+                  <label for="">Mã chuyến về</label>
+                  <input
+                    type="text"
+                    pInputText
+                    [(ngModel)]="register.returnPlaneCode"
+                    placeholder="Chưa có mã chuyến bay"
+                    class="border-noround-right"
+                  />
+                </div>
+                <div class="field col">
+                  <label for="">Giờ bay</label>
+                  <p-calendar
+                    [(ngModel)]="register.otherLeaveTime"
+                    placeholder="Chưa có giờ bay"
+                    [showTime]="true"
+                    [showClear]="true"
+                    class="border-noround"
+                    appendTo="body"
+              dateFormat="dd/mm/yy"
+              >
+                  </p-calendar>
+                </div>
+                <div
+                  class="field border-noround col-fixed flex align-items-end"
+                >
+                  <button
+                    pButton
+                    pRipple
+                    icon="pi pi-check"
+                    class="border-noround-left p-button-success"
+                    (click)="
+                      save('moveType', 'otherLeaveTime', 'returnPlaneCode')
+                    "
+                  ></button>
+                </div>
+              </div>
+            </ng-container>
+            <ng-container *ngSwitchCase="MoveType.Other">
+              <div class="grid grid-nogutter col-12">
+                <div class="field col">
+                  <label for="">Địa điểm xuất phát</label>
+                  <input
+                    type="text"
+                    pInputText
+                    [(ngModel)]="register.otherStartAddress"
+                    class="border-noround-right"
+                  />
+                </div>
+                <div class="field col">
+                  <label for="">Thời gian khởi hành</label>
+                  <p-calendar
+                    [(ngModel)]="register.otherStartTime"
+                    [showTime]="true"
+                    [showClear]="true"
+                    class="border-noround"
+                    appendTo="body"
+              dateFormat="dd/mm/yy"
+              >
+                  </p-calendar>
+                </div>
+                <div
+                  class="field border-noround col-fixed flex align-items-end"
+                >
+                  <button
+                    pButton
+                    pRipple
+                    icon="pi pi-check"
+                    class="border-noround-left p-button-success"
+                    (click)="
+                      save('moveType', 'otherStartTime', 'otherStartAddress')
+                    "
+                  ></button>
+                </div>
+              </div>
+              <div class="grid grid-nogutter col-12">
+                <div class="field col">
+                  <label for="">Điểm trở về sau lễ</label>
+                  <input
+                    type="text"
+                    pInputText
+                    [(ngModel)]="register.otherLeaveAddress"
+                    class="border-noround-right"
+                  />
+                </div>
+                <div class="field col">
+                  <label for="">Thời gian trở về</label>
+                  <p-calendar
+                    [(ngModel)]="register.otherLeaveTime"
+                    [showTime]="true"
+                    [showClear]="true"
+                    class="border-noround"
+                    appendTo="body"
+              dateFormat="dd/mm/yy"
+              >
+                  </p-calendar>
+                </div>
+                <div
+                  class="field border-noround col-fixed flex align-items-end"
+                >
+                  <button
+                    pButton
+                    pRipple
+                    icon="pi pi-check"
+                    class="border-noround-left p-button-success"
+                    (click)="
+                      save('moveType', 'otherLeaveTime', 'otherLeaveAddress')
+                    "
+                  ></button>
+                </div>
+              </div>
+            </ng-container>
+            <ng-container *ngSwitchCase="MoveType.WithCTN">
+              <div class="col field">
+                <label for="">Địa điểm xuất phát</label>
+                <p-dropdown
+                  [options]="startAddresses"
+                  [(ngModel)]="selectedStartAddress"
+                  optionLabel="name"
+                  (onShow)="loadStartAddresses()"
+                  emptyMessage="Đại lễ chưa có điểm xuất phát"
+                  emptyFilterMessage="Không tìm thấy điểm xuất phát phù hợp"
+                  appendTo="body"
+                  styleClass="border-noround"
+                  placeholder="Chưa chọn điểm khởi hành"
+                ></p-dropdown>
+              </div>
+              <div class="col field">
+                <label for="">Thời gian khởi hành</label>
+                <p-dropdown
+                  [options]="selectedStartAddress?.times ?? []"
+                  [(ngModel)]="selectedStartTimeId"
+                  optionValue="id"
+                  appendTo="body"
+                  styleClass="border-noround"
+                  placeholder="Chưa chọn thời gian khởi hành"
+                >
+                  <ng-template
+                    pTemplate="item"
+                    let-item
+                  >
+                    {{ item.name }} {{ item.time | date : "dd/MM/yy HH:mm" }}
+                  </ng-template>
+                  <ng-template
+                    pTemplate="selectedItem"
+                    let-item
+                  >
+                    {{ item.name }} {{ item.time | date : "dd/MM/yy HH:mm" }}
+                  </ng-template>
+                </p-dropdown>
+              </div>
+              <div class="field border-noround col-fixed flex align-items-end">
+                <button
+                  pButton
+                  pRipple
+                  icon="pi pi-check"
+                  class="border-noround-left p-button-success"
+                  (click)="save('moveType', 'startTimeId')"
+                ></button>
+              </div>
+            </ng-container>
+          </ng-container>
+        </div>
+        <div class="grid">
+          <div class="field col">
+            <label for="">Đăng ký quy y</label>
+            <p-dropdown
+              [options]="[
+                { label: 'Có', value: true },
+                { label: 'Không', value: false }
+              ]"
+              optionValue="value"
+              optionLabel="label"
+              [(ngModel)]="register.refugeRegistry"
+              (onChange)="save('refugeRegistry')"
+              appendTo="body"
+            ></p-dropdown>
+          </div>
+          <div class="field col">
+            <label for="">Trả lá phái</label>
+            <p-dropdown
+              [options]="[
+                { label: 'Đã trả', value: true },
+                { label: 'Chưa trả', value: false }
+              ]"
+              [disabled]="!register.refugeRegistry"
+              optionValue="value"
+              optionLabel="label"
+              [ngModel]="register.receivedRefugeCert && register.refugeRegistry"
+              (ngModelChange)="register.receivedRefugeCert"
+              (onChange)="save('receivedRefugeCert')"
+              appendTo="body"
+            ></p-dropdown>
+          </div>
+        </div>
+      </div>
+    </p-tabPanel>
+    <p-tabPanel header="Đánh giá"> </p-tabPanel>
+  </p-tabView>
+</p-card>
+<div *ngIf="!register && selectedEvent">
+  Thành viên chưa đăng ký tham gia đại lễ này,
+  <span
+    (click)="initModel()"
+    class="cursor-pointer font-semibold underline"
+    >tạo đăng ký</span
+  >
+</div>

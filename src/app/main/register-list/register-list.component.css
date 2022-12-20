@@ -1,0 +1,27 @@
+.p-float-label input:focus ~ label,
+.p-float-label input.p-filled ~ label,
+.p-float-label textarea:focus ~ label,
+.p-float-label textarea.p-filled ~ label,
+.p-float-label .p-inputwrapper-focus ~ label,
+.p-float-label .p-inputwrapper-filled ~ label {
+  top: 0.15rem !important;
+}
+.p-float-label label {
+  background-color: white;
+  padding-left: 2px;
+  padding-right: 2px;
+}
+
+/* :host ::ng-deep .p-datatable .p-datatable-thead > tr > th {
+  position: -webkit-sticky;
+  position: sticky;
+  top: 0;
+} */
+
+/* .layout-news-active :host ::ng-deep .p-datatable tr > th {
+  top: 7rem;
+} */
+
+.p-element .p-datatable-tbody > tr > td[ng-reflect-ng-switch] {
+  padding: 0 0 !important;
+}

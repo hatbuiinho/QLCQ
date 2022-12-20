@@ -1,0 +1,167 @@
+<form
+  [formGroup]="form"
+  class="p-fluid"
+  (submit)="submit()"
+>
+  <input
+    type="submit"
+    id="form_submit"
+    class="hidden"
+  />
+  <div class="grid">
+    <div class="field col">
+      <label for="description">Tên điểm</label>
+      <input
+        type="text"
+        pInputText
+        formControlName="name"
+        name="address_name"
+      />
+    </div>
+  </div>
+  <div class="field">
+    <label for="description">Mô tả</label>
+    <input
+      type="text"
+      pInputText
+      placeholder="Không có mô tả"
+      formControlName="description"
+    />
+  </div>
+  <div class="field">
+    <label for="">Địa chỉ nhận thẻ</label>
+    <div class="grid">
+      <div
+        class="field col"
+        style="min-width: 200px"
+      >
+        <p-dropdown
+          [options]="provinces"
+          [lazy]="true"
+          formControlName="provinceId"
+          optionValue="id"
+          (onShow)="loadProvinces()"
+          (onChange)="
+            form.controls['districtId'].setValue(null);
+            form.controls['wardId'].setValue(null)
+          "
+          [filter]="true"
+          filterBy="name, code"
+          placeholder="Tỉnh/TP"
+          dataKey="id"
+          [showClear]="true"
+          appendTo="body"
+          emptyFilterMessage="Không tìm thấy tỉnh phù hợp"
+        >
+          <ng-template
+            pTemplate="item"
+            let-address
+          >
+            <div style="overflow: hidden; text-overflow: ellipsis">
+              {{ address.pre }} {{ address.name }}
+            </div>
+          </ng-template>
+          <ng-template
+            let-value
+            pTemplate="selectedItem"
+          >
+            <div
+              *ngIf="value"
+              style="overflow: hidden; text-overflow: ellipsis"
+            >
+              {{ value.pre }}
+              {{ value.name }}
+            </div>
+          </ng-template>
+        </p-dropdown>
+      </div>
+      <div
+        class="field col"
+        style="min-width: 200px"
+      >
+        <p-dropdown
+          formControlName="districtId"
+          optionValue="id"
+          [options]="districts"
+          (onShow)="loadDistricts(form.value.provinceId)"
+          (onChange)="form.controls['wardId'].setValue(null)"
+          [filter]="true"
+          filterBy="name, code"
+          placeholder="Quận/Huyện"
+          dataKey="id"
+          [showClear]="true"
+          appendTo="body"
+          emptyMessage="Vui lòng chọn tỉnh trước"
+          emptyFilterMessage="Không tìm thấy huyện phù hợp"
+        >
+          <ng-template
+            pTemplate="item"
+            let-address
+          >
+            <div style="overflow: hidden; text-overflow: ellipsis">
+              {{ address.pre }} {{ address.name }}
+            </div>
+          </ng-template>
+          <ng-template
+            let-value
+            pTemplate="selectedItem"
+          >
+            <div
+              *ngIf="value"
+              style="overflow: hidden; text-overflow: ellipsis"
+            >
+              {{ value.pre }}
+              {{ value.name }}
+            </div>
+          </ng-template>
+        </p-dropdown>
+      </div>
+    </div>
+    <div class="grid">
+      <div class="field col">
+        <p-dropdown
+          formControlName="wardId"
+          optionValue="id"
+          (onShow)="loadWards(form.value.districtId)"
+          [options]="wards"
+          [filter]="true"
+          filterBy="name, code"
+          placeholder="Phường/Xã"
+          dataKey="id"
+          [showClear]="true"
+          appendTo="body"
+          emptyMessage="Vui lòng chọn huyện trước"
+          emptyFilterMessage="Không tìm thấy xã phù hợp"
+        >
+          <ng-template
+            pTemplate="item"
+            let-address
+          >
+            <div style="overflow: hidden; text-overflow: ellipsis">
+              {{ address.pre }} {{ address.name }}
+            </div>
+          </ng-template>
+          <ng-template
+            let-value
+            pTemplate="selectedItem"
+          >
+            <div
+              *ngIf="value"
+              style="overflow: hidden; text-overflow: ellipsis"
+            >
+              {{ value.pre }}
+              {{ value.name }}
+            </div>
+          </ng-template>
+        </p-dropdown>
+      </div>
+      <div class="field col">
+        <input
+          pInputText
+          placeholder="Chi tiết"
+          formControlName="address"
+        />
+      </div>
+    </div>
+  </div>
+</form>

@@ -1,0 +1,201 @@
+<p-toolbar>
+  <ng-template pTemplate="left">
+    <app-event-dropdown
+      [options]="this.events"
+      [(value)]="this.selectedEvent"
+      [autoLoad]="false"
+      class="mr-3"
+    >
+    </app-event-dropdown>
+
+    <p-dropdown
+      class="mr-3"
+      [style]="{ 'min-width': '200px' }"
+      [options]="this.departmentDetails"
+      [(ngModel)]="this.selectedDeptDetail"
+      [showClear]="true"
+      [filter]="true"
+      filterBy="department.name, department.code"
+      optionValue="id"
+      optionLabel="department.name"
+      emptyFilterMessage="Không tìm thấy ban phù hợp"
+      emptyMessage="Đại lễ chưa có ban được tạo"
+      placeholder="Ban đại lễ"
+      (onChange)="loadAreas()"
+      (onChange)="loadGroups()"
+    ></p-dropdown>
+    <p-dropdown
+      class="mr-3"
+      [style]="{ 'min-width': '200px' }"
+      [options]="this.areas"
+      [(ngModel)]="this.selectedArea"
+      [showClear]="true"
+      [filter]="true"
+      filterBy="name"
+      optionValue="id"
+      optionLabel="name"
+      emptyFilterMessage="Không tìm thấy khu vực phù hợp"
+      emptyMessage="Không có khu vực phù hợp"
+      placeholder="Khu vực"
+      (onChange)="loadGroups()"
+    ></p-dropdown>
+    <p-splitButton
+      icon="fa-solid fa-plus"
+      label="Thêm mới ({{ selectedGroups.length }})"
+      [model]="btnItems"
+      (onClick)="add()"
+      styleClass="p-button-raised p-button-text white-space-nowrap"
+      [style]="{ width: '200px', 'max-width': '40vw' }"
+    ></p-splitButton>
+  </ng-template>
+  <ng-template pTemplate="right">
+    <!-- <p-dropdown
+          [options]="statuses"
+          (onChange)="dt1.filterGlobal($event.value, FilterMatchMode.EQUALS)"
+          #dropdown
+          [style]="{ width: '200px', 'max-width' : '45vw' }"
+          placeholder="Tất cả"
+          [showClear]="true"
+          optionValue="value"
+          optionLabel="name"
+          class="mr-3"
+        >
+        </p-dropdown> -->
+    <span
+      class="p-input-icon-left"
+      style="width: 200px; max-width: 45vw"
+    >
+      <i class="pi pi-search"></i>
+      <input
+        class="w-100"
+        pInputText
+        type="text"
+        #searchInput
+        (input)="dt1.filterGlobal(searchInput.value, 'contains')"
+        placeholder="Từ khóa tìm kiếm"
+      />
+    </span>
+  </ng-template>
+</p-toolbar>
+<small>Giữ phím Ctrl hoặc Meta để chọn sắp xếp theo nhiều cột</small>
+<p-table
+  #dt1
+  [loading]="loading"
+  [scrollable]="true"
+  scrollHeight="calc(100vh - {{ tableOffsetTop }}px)"
+  [value]="groups"
+  sortMode="multiple"
+  [(selection)]="selectedGroups"
+  dataKey="id"
+  [paginator]="true"
+  [selectionPageOnly]="true"
+  [rows]="10"
+  styleClass="p-datatable-striped"
+  [rowsPerPageOptions]="[10, 25, 50]"
+  [globalFilterFields]="['name', 'departmentDetail.name', 'code']"
+>
+  <ng-template pTemplate="header">
+    <tr>
+      <th style="width: 4rem">
+        <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+      </th>
+      <th pSortableColumn="name">
+        Khu vực <p-sortIcon field="name"></p-sortIcon>
+      </th>
+      <th pSortableColumn="departmentDetailId">
+        Ban <p-sortIcon field="departmentDetailId"></p-sortIcon>
+      </th>
+      <th pSortableColumn="actualQuantity">
+        Nhân sự <p-sortIcon field="actualQuantity"></p-sortIcon>
+      </th>
+      <th pSortableColumn="note">
+        Ghi chú <p-sortIcon field="note"></p-sortIcon>
+      </th>
+      <th style="width: 4rem"></th>
+    </tr>
+  </ng-template>
+  <ng-template
+    pTemplate="body"
+    let-item
+  >
+    <tr class="cursor-pointer">
+      <td>
+        <p-tableCheckbox [value]="item"></p-tableCheckbox>
+      </td>
+      <td (click)="showDetail(item)">
+        <div class="font-semibold">
+          {{ item.name }}
+        </div>
+      </td>
+      <td (click)="showDetail(item)">
+        <div class="font-semibold">
+          {{ item.area?.departmentDetail?.department?.name }}
+        </div>
+        {{ item.area?.name }}
+      </td>
+      <td (click)="showDetail(item)">
+        {{ item.actualQuantity ?? 0 }}
+      </td>
+      <td (click)="showDetail(item)">{{ item.note }}</td>
+      <td>
+        <button
+          (click)="edit(item)"
+          pButton
+          pRipple
+          type="button"
+          icon="pi pi-pencil"
+          class="p-button-rounded p-button-text"
+        ></button>
+      </td>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="emptymessage">
+    <tr>
+      <td colspan="10">
+        <div class="font-bold text-center">
+          <span *ngIf="!selectedDeptDetail"
+            >Hãy chọn một ban để xem danh sách nhóm</span
+          >
+          <span *ngIf="selectedDeptDetail"
+            >Ban/khu vực hiện chưa có nhóm nào</span
+          >
+        </div>
+      </td>
+    </tr>
+  </ng-template>
+</p-table>
+
+<p-dialog
+  header="Thông tin khu vực"
+  [modal]="true"
+  [maximizable]="true"
+  [style]="{ width: '75vw' }"
+  [(visible)]="formVisible"
+  appendTo="body"
+  [scrollLeft]="true"
+  [blockScroll]="true"
+  [closable]="true"
+  [breakpoints]="{ '576px': '100vw' }"
+  [resizable]="true"
+>
+  <app-group
+    [departments]="departmentDetails"
+    [departmentDetailId]="selectedDeptDetail"
+    [area]="selectedArea"
+    [value]="selectedGroup"
+    (onSubmit)="save($event)"
+  ></app-group>
+  <ng-template pTemplate="footer">
+    <div class="flex">
+      <label
+        for="submit"
+        class="ml-auto w-auto p-button-outlined p-button-success"
+        pButton
+        pRipple
+        label="Lưu"
+      ></label>
+    </div>
+  </ng-template>
+</p-dialog>
+
+<p-dialog> </p-dialog>

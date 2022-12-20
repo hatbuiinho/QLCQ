@@ -1,0 +1,181 @@
+<form
+  [formGroup]="form"
+  class="p-fluid"
+  (submit)="submit()"
+>
+  <div class="flex mt-2">
+    <button
+      pButton
+      pRipple
+      label="Lưu thông tin"
+      icon="fa-regular fa-floppy-disk"
+      class="ml-auto p-button-success p-button-outlined w-auto"
+      type="submit"
+    ></button>
+  </div>
+  <div class="grid">
+    <div
+      class="field col"
+      style="min-width: 200px"
+    >
+      <label for="description">Tên điểm</label>
+      <input
+        type="text"
+        pInputText
+        formControlName="name"
+        name="address_name"
+      />
+    </div>
+    <div
+      class="field col"
+      style="min-width: 200px"
+    >
+      <label for="description">Mô tả</label>
+      <input
+        type="text"
+        pInputText
+        placeholder="Mô tả..."
+        formControlName="description"
+      />
+    </div>
+  </div>
+  <div class="field">
+    <label for="">Địa điểm xuất phát</label>
+    <div class="grid">
+      <div
+        class="col-12 md:col"
+        style="min-width: 200px"
+      >
+        <p-dropdown
+          [options]="provinces"
+          [lazy]="true"
+          formControlName="provinceId"
+          optionValue="id"
+          (onShow)="loadProvinces()"
+          (onChange)="
+            form.controls['districtId'].setValue(null);
+            form.controls['wardId'].setValue(null)
+          "
+          [filter]="true"
+          filterBy="name, code"
+          placeholder="Tỉnh/TP"
+          dataKey="id"
+          [showClear]="true"
+          appendTo="body"
+        >
+          <ng-template
+            pTemplate="item"
+            let-address
+          >
+            <div style="overflow: hidden; text-overflow: ellipsis">
+              {{ address.pre }} {{ address.name }}
+            </div>
+          </ng-template>
+          <ng-template
+            let-value
+            pTemplate="selectedItem"
+          >
+            <div
+              *ngIf="value"
+              style="overflow: hidden; text-overflow: ellipsis"
+            >
+              {{ value.pre }}
+              {{ value.name }}
+            </div>
+          </ng-template>
+        </p-dropdown>
+      </div>
+      <div
+        class="col-12 md:col"
+        style="min-width: 200px"
+      >
+        <p-dropdown
+          formControlName="districtId"
+          optionValue="id"
+          [options]="districts"
+          (onShow)="loadDistricts(form.value.provinceId)"
+          (onChange)="form.controls['wardId'].setValue(null)"
+          [filter]="true"
+          filterBy="name, code"
+          placeholder="Quận/Huyện"
+          dataKey="id"
+          [showClear]="true"
+          appendTo="body"
+        >
+          <ng-template
+            pTemplate="item"
+            let-address
+          >
+            <div style="overflow: hidden; text-overflow: ellipsis">
+              {{ address.pre }} {{ address.name }}
+            </div>
+          </ng-template>
+          <ng-template
+            let-value
+            pTemplate="selectedItem"
+          >
+            <div
+              *ngIf="value"
+              style="overflow: hidden; text-overflow: ellipsis"
+            >
+              {{ value.pre }}
+              {{ value.name }}
+            </div>
+          </ng-template>
+        </p-dropdown>
+      </div>
+      <div
+        class="col-12 md:col"
+        style="min-width: 200px"
+      >
+        <p-dropdown
+          formControlName="wardId"
+          optionValue="id"
+          (onShow)="loadWards(form.value.districtId)"
+          [options]="wards"
+          [filter]="true"
+          filterBy="name, code"
+          placeholder="Phường/Xã"
+          dataKey="id"
+          [showClear]="true"
+          appendTo="body"
+        >
+          <ng-template
+            pTemplate="item"
+            let-address
+          >
+            <div style="overflow: hidden; text-overflow: ellipsis">
+              {{ address.pre }} {{ address.name }}
+            </div>
+          </ng-template>
+          <ng-template
+            let-value
+            pTemplate="selectedItem"
+          >
+            <div
+              *ngIf="value"
+              style="overflow: hidden; text-overflow: ellipsis"
+            >
+              {{ value.pre }}
+              {{ value.name }}
+            </div>
+          </ng-template>
+        </p-dropdown>
+      </div>
+      <div class="col-12 md:col">
+        <input
+          pInputText
+          placeholder="Chi tiết"
+          formControlName="address"
+        />
+      </div>
+    </div>
+  </div>
+</form>
+<app-start-time-table
+  *ngIf="startAddress"
+  [(value)]="startAddress.times"
+  [showAddress]="false"
+  [address]="startAddress"
+  [event]="selectedEvent"
+></app-start-time-table>

@@ -1,0 +1,1106 @@
+<p-overlayPanel
+  #op1
+  [showCloseIcon]="true"
+  [dismissable]="true"
+  [style]="{ width: dt1.el.nativeElement.offsetWidth + 'px' }"
+>
+  <ng-template pTemplate>
+    <div class="p-fluid w-100">
+      <div class="grid">
+        <div
+          class="col"
+          style="min-width: 200px; max-width: 250px"
+        >
+          <span class="p-float-label">
+            <p-dropdown
+              inputId="departmentDetail"
+              [options]="departmentDetails"
+              optionLabel="department.name"
+              [(ngModel)]="filterDepartmentDetail"
+              [showClear]="true"
+              class="p-0"
+              (onChange)="refresh()"
+              (onChange)="updateActiveFilterNumber()"
+              (onClear)="updateActiveFilterNumber()"
+              placeholder="Tất cả ban"
+              (onChange)="areas = []"
+              (onShow)="loadDepartmentDetails()"
+              emptyFilterMessage="Không có ban phù hợp"
+              emptyMessage="Không có ban phù hợp"
+              [filter]="true"
+              filterBy="department.name,department.code"
+            ></p-dropdown>
+            <label for="departmentDetail">Ban</label>
+          </span>
+        </div>
+        <div
+          class="col"
+          style="min-width: 200px; max-width: 250px"
+        >
+          <span class="p-float-label">
+            <p-dropdown
+              [options]="areas"
+              optionValue="id"
+              optionLabel="name"
+              inputId="area"
+              [(ngModel)]="filterArea"
+              [showClear]="true"
+              class="p-0"
+              (onChange)="refresh()"
+              (onChange)="groups = []"
+              placeholder="Tất cả khu vực"
+              (onShow)="loadAreas()"
+              emptyFilterMessage="Không có khu vực phù hợp"
+              emptyMessage="Không có khu vực phù hợp"
+              [filter]="true"
+              filterBy="name,code"
+            ></p-dropdown>
+            <label for="area">Khu vực</label>
+          </span>
+        </div>
+        <div
+          class="col"
+          style="min-width: 200px; max-width: 250px"
+        >
+          <span class="p-float-label">
+            <p-dropdown
+              inputId="group"
+              [options]="groups"
+              optionValue="id"
+              optionLabel="name"
+              [(ngModel)]="filterGroup"
+              [showClear]="true"
+              class="p-0"
+              (onChange)="refresh()"
+              placeholder="Tất cả nhóm"
+              (onShow)="loadGroups()"
+              emptyFilterMessage="Không có nhóm phù hợp"
+              emptyMessage="Không có nhóm phù hợp"
+              [filter]="true"
+              filterBy="name,code"
+            ></p-dropdown>
+            <label for="group">Nhóm</label>
+          </span>
+        </div>
+        <!-- <div class="col-fixed flex">
+          <button
+            pButton
+            class="mt-auto p-button-text p-button-raised"
+            [label]="showFilterExtend ? 'Rút gọn' : 'Mở rộng'"
+            [icon]="showFilterExtend ? 'pi pi-minus' : 'pi pi-plus'"
+            (click)="showFilterExtend = !showFilterExtend"
+            iconPos="right"
+          ></button>
+        </div> -->
+      </div>
+      <div class="grid mt-3">
+        <div class="col-fixed">
+          <button
+            pButton
+            pRipple
+            label="Tìm"
+            icon="pi pi-search"
+            class="p-button-outlined"
+            (click)="refresh()"
+          ></button>
+        </div>
+        <div
+          class="col"
+          style="min-width: 200px; max-width: 250px"
+        >
+          <span class="p-float-label">
+            <p-dropdown
+              (onChange)="updateActiveFilterNumber()"
+              (onClear)="updateActiveFilterNumber()"
+              [options]="assignStatusOptions"
+              optionValue="value"
+              optionLabel="label"
+              [(ngModel)]="assignStatus"
+              [showClear]="true"
+              placeholder="Trạng thái ban"
+              appendTo="body"
+            ></p-dropdown>
+            <label for="dropdown">Trạng thái ban</label>
+          </span>
+        </div>
+        <div
+          class="col"
+          style="min-width: 200px; max-width: 250px"
+        >
+          <span class="p-float-label">
+            <p-dropdown
+              (onChange)="updateActiveFilterNumber()"
+              (onClear)="updateActiveFilterNumber()"
+              [options]="moveTypes"
+              optionValue="value"
+              optionLabel="label"
+              [(ngModel)]="filterMoveType"
+              [showClear]="true"
+              class="p-0"
+              placeholder="Tất cả"
+              inputId="moveType"
+            ></p-dropdown>
+            <label for="moveType">Phương thức di chuyển</label>
+          </span>
+        </div>
+        <div
+          class="col"
+          style="min-width: 200px; max-width: 250px"
+        >
+          <span class="p-float-label">
+            <p-dropdown
+              (onChange)="updateActiveFilterNumber()"
+              (onClear)="updateActiveFilterNumber()"
+              [options]="registerTypes"
+              optionValue="value"
+              optionLabel="label"
+              [(ngModel)]="filterRegisterType"
+              [showClear]="true"
+              class="p-0"
+              placeholder="Hình thức đăng ký"
+              inputId="registerType"
+            ></p-dropdown>
+            <label for="registerType">Hình thức đăng ký</label>
+          </span>
+        </div>
+        <div
+          class="col"
+          style="min-width: 200px; max-width: 250px"
+        >
+          <span class="p-float-label">
+            <p-dropdown
+              (onChange)="updateActiveFilterNumber()"
+              (onClear)="updateActiveFilterNumber()"
+              inputId="printStatus"
+              appendTo="body"
+              [options]="printStatuses"
+              optionValue="value"
+              optionLabel="label"
+              [(ngModel)]="filterPrintStatus"
+              [showClear]="true"
+              class="p-0"
+              placeholder="Tất cả"
+            ></p-dropdown>
+            <label for="printStatus">Trạng thái in</label>
+          </span>
+        </div>
+        <div
+          class="col"
+          style="min-width: 200px; max-width: 250px"
+        >
+          <span class="p-float-label">
+            <p-dropdown
+              (onChange)="updateActiveFilterNumber()"
+              (onClear)="updateActiveFilterNumber()"
+              inputId="receiveCardStatus"
+              [options]="receiveCardStatuses"
+              optionValue="value"
+              optionLabel="label"
+              [(ngModel)]="filterReceiveCardStatus"
+              [showClear]="true"
+              class="p-0"
+              placeholder="Tất cả"
+              appendTo="body"
+            ></p-dropdown>
+            <label for="receiveCardStatus">Trạng thái nhận thẻ</label>
+          </span>
+        </div>
+        <div
+          class="col"
+          style="min-width: 200px; max-width: 250px"
+        >
+          <span class="p-float-label">
+            <p-dropdown
+              (onChange)="updateActiveFilterNumber()"
+              (onClear)="updateActiveFilterNumber()"
+              [options]="receiveClothStatus"
+              inputId="receiveClothStatus"
+              optionValue="value"
+              optionLabel="label"
+              [(ngModel)]="filterReceiveCloth"
+              [showClear]="true"
+              class="p-0"
+              placeholder="Tất cả"
+            ></p-dropdown>
+            <label for="receiveClothStatus">Trạng thái nhận áo</label>
+          </span>
+        </div>
+      </div>
+    </div>
+  </ng-template>
+</p-overlayPanel>
+
+<!-- filter 2 -->
+<p-overlayPanel
+  #op2
+  [showCloseIcon]="true"
+  [dismissable]="true"
+  [style]="{ width: dt2.el.nativeElement.offsetWidth + 'px' }"
+>
+  <ng-template pTemplate>
+    <div class="p-fluid w-100">
+      <div class="grid">
+        <div
+          class="col"
+          style="min-width: 200px; max-width: 250px"
+        >
+          <span class="p-float-label">
+            <p-dropdown
+              inputId="departmentDetail"
+              [options]="departmentDetails"
+              optionLabel="department.name"
+              [(ngModel)]="filterDepartmentDetail"
+              [showClear]="true"
+              class="p-0"
+              (onChange)="refresh()"
+              (onChange)="updateActiveFilterNumber()"
+              (onClear)="updateActiveFilterNumber()"
+              placeholder="Tất cả ban"
+              (onChange)="areas = []"
+              (onShow)="loadDepartmentDetails()"
+              emptyFilterMessage="Không có ban phù hợp"
+              emptyMessage="Không có ban phù hợp"
+              [filter]="true"
+              filterBy="department.name,department.code"
+            ></p-dropdown>
+            <label for="departmentDetail">Ban</label>
+          </span>
+        </div>
+        <div
+          class="col"
+          style="min-width: 200px; max-width: 250px"
+        >
+          <span class="p-float-label">
+            <p-dropdown
+              [options]="areas"
+              optionValue="id"
+              optionLabel="name"
+              inputId="area"
+              [(ngModel)]="filterArea"
+              [showClear]="true"
+              class="p-0"
+              (onChange)="refresh()"
+              (onChange)="groups = []"
+              placeholder="Tất cả khu vực"
+              (onShow)="loadAreas()"
+              emptyFilterMessage="Không có khu vực phù hợp"
+              emptyMessage="Không có khu vực phù hợp"
+              [filter]="true"
+              filterBy="name,code"
+            ></p-dropdown>
+            <label for="area">Khu vực</label>
+          </span>
+        </div>
+        <div
+          class="col"
+          style="min-width: 200px; max-width: 250px"
+        >
+          <span class="p-float-label">
+            <p-dropdown
+              inputId="group"
+              [options]="groups"
+              optionValue="id"
+              optionLabel="name"
+              [(ngModel)]="filterGroup"
+              [showClear]="true"
+              class="p-0"
+              (onChange)="refresh()"
+              placeholder="Tất cả nhóm"
+              (onShow)="loadGroups()"
+              emptyFilterMessage="Không có nhóm phù hợp"
+              emptyMessage="Không có nhóm phù hợp"
+              [filter]="true"
+              filterBy="name,code"
+            ></p-dropdown>
+            <label for="group">Nhóm</label>
+          </span>
+        </div>
+        <!-- <div class="col-fixed flex">
+          <button
+            pButton
+            class="mt-auto p-button-text p-button-raised"
+            [label]="showFilterExtend ? 'Rút gọn' : 'Mở rộng'"
+            [icon]="showFilterExtend ? 'pi pi-minus' : 'pi pi-plus'"
+            (click)="showFilterExtend = !showFilterExtend"
+            iconPos="right"
+          ></button>
+        </div> -->
+      </div>
+      <div class="grid mt-3">
+        <div class="col-fixed">
+          <button
+            pButton
+            pRipple
+            label="Tìm"
+            icon="pi pi-search"
+            class="p-button-outlined"
+            (click)="refresh()"
+          ></button>
+        </div>
+        <div
+          class="col"
+          style="min-width: 200px; max-width: 250px"
+        >
+          <span class="p-float-label">
+            <p-dropdown
+              (onChange)="updateActiveFilterNumber()"
+              (onClear)="updateActiveFilterNumber()"
+              [options]="assignStatusOptions"
+              optionValue="value"
+              optionLabel="label"
+              [(ngModel)]="assignStatus"
+              [showClear]="true"
+              placeholder="Trạng thái ban"
+              appendTo="body"
+            ></p-dropdown>
+            <label for="dropdown">Trạng thái ban</label>
+          </span>
+        </div>
+        <div
+          class="col"
+          style="min-width: 200px; max-width: 250px"
+        >
+          <span class="p-float-label">
+            <p-dropdown
+              (onChange)="updateActiveFilterNumber()"
+              (onClear)="updateActiveFilterNumber()"
+              [options]="moveTypes"
+              optionValue="value"
+              optionLabel="label"
+              [(ngModel)]="filterMoveType"
+              [showClear]="true"
+              class="p-0"
+              placeholder="Tất cả"
+              inputId="moveType"
+            ></p-dropdown>
+            <label for="moveType">Phương thức di chuyển</label>
+          </span>
+        </div>
+        <div
+          class="col"
+          style="min-width: 200px; max-width: 250px"
+        >
+          <span class="p-float-label">
+            <p-dropdown
+              (onChange)="updateActiveFilterNumber()"
+              (onClear)="updateActiveFilterNumber()"
+              [options]="registerTypes"
+              optionValue="value"
+              optionLabel="label"
+              [(ngModel)]="filterRegisterType"
+              [showClear]="true"
+              class="p-0"
+              placeholder="Hình thức đăng ký"
+              inputId="registerType"
+            ></p-dropdown>
+            <label for="registerType">Hình thức đăng ký</label>
+          </span>
+        </div>
+        <div
+          class="col"
+          style="min-width: 200px; max-width: 250px"
+        >
+          <span class="p-float-label">
+            <p-dropdown
+              (onChange)="updateActiveFilterNumber()"
+              (onClear)="updateActiveFilterNumber()"
+              inputId="printStatus"
+              appendTo="body"
+              [options]="printStatuses"
+              optionValue="value"
+              optionLabel="label"
+              [(ngModel)]="filterPrintStatus"
+              [showClear]="true"
+              class="p-0"
+              placeholder="Tất cả"
+            ></p-dropdown>
+            <label for="printStatus">Trạng thái in</label>
+          </span>
+        </div>
+        <div
+          class="col"
+          style="min-width: 200px; max-width: 250px"
+        >
+          <span class="p-float-label">
+            <p-dropdown
+              (onChange)="updateActiveFilterNumber()"
+              (onClear)="updateActiveFilterNumber()"
+              inputId="receiveCardStatus"
+              [options]="receiveCardStatuses"
+              optionValue="value"
+              optionLabel="label"
+              [(ngModel)]="filterReceiveCardStatus"
+              [showClear]="true"
+              class="p-0"
+              placeholder="Tất cả"
+              appendTo="body"
+            ></p-dropdown>
+            <label for="receiveCardStatus">Trạng thái nhận thẻ</label>
+          </span>
+        </div>
+        <div
+          class="col"
+          style="min-width: 200px; max-width: 250px"
+        >
+          <span class="p-float-label">
+            <p-dropdown
+              (onChange)="updateActiveFilterNumber()"
+              (onClear)="updateActiveFilterNumber()"
+              [options]="receiveClothStatus"
+              inputId="receiveClothStatus"
+              optionValue="value"
+              optionLabel="label"
+              [(ngModel)]="filterReceiveCloth"
+              [showClear]="true"
+              class="p-0"
+              placeholder="Tất cả"
+            ></p-dropdown>
+            <label for="receiveClothStatus">Trạng thái nhận áo</label>
+          </span>
+        </div>
+      </div>
+    </div>
+  </ng-template>
+</p-overlayPanel>
+
+<p-toolbar>
+  <div class="flex flex-wrap gap-3 justify-content-between w-100">
+    <div class="grid">
+      <div class="col-fixed">
+        <p-dropdown
+          (onChange)="departmentDetails = []"
+          (onChange)="updateActiveFilterNumber()"
+          (onClear)="updateActiveFilterNumber()"
+          [options]="events"
+          [(ngModel)]="selectedEvent"
+          emptyMessage="Không có đại lễ"
+          emptyFilterMessage="Không tìm thấy đại lễ phù hợp"
+          [filter]="true"
+          filterBy="name"
+          placeholder="Chọn đại lễ"
+        >
+          <ng-template
+            pTemplate="item"
+            let-event
+          >
+            <div
+              style="
+                max-width: 200px;
+                overflow: hidden;
+                text-overflow: ellipsis;
+              "
+            >
+              {{ event.name }}
+            </div>
+          </ng-template>
+          <ng-template pTemplate="selectedItem">
+            <div
+              *ngIf="selectedEvent"
+              style="
+                max-width: 200px;
+                overflow: hidden;
+                text-overflow: ellipsis;
+              "
+            >
+              {{ selectedEvent.name }}
+            </div>
+          </ng-template>
+        </p-dropdown>
+      </div>
+      <div class="col-fixed">
+        <p-splitButton
+          icon="fa-solid fa-plus"
+          label="Thêm mới"
+          [model]="btnItems"
+          (onClick)="add()"
+          styleClass="p-button-raised p-button-text white-space-nowrap"
+          [style]="{ width: '200px', 'max-width': '40vw' }"
+          [disabled]="loading"
+        ></p-splitButton>
+      </div>
+      <div
+        class="col-fixed"
+        [class.hidden]="false"
+      >
+        <p-splitButton
+          #action
+          [class.hidden]="true"
+          [model]="actionMenuItems"
+          (onClick)="action.onDropdownButtonClick($event)"
+          label="Trạng thái"
+        >
+        </p-splitButton>
+      </div>
+      <div class="col-fixed flex gap-2">
+        <p-button
+          (click)="openAssignPopup()"
+          label="Phân ban"
+          badge="{{ selectedRegisters.length || '' }}"
+        ></p-button>
+        <app-print-card [registers]="selectedRegisters"></app-print-card>
+      </div>
+
+      <div class="col-fixed">
+        <p-button
+          *ngIf="!isDynamicTable"
+          (click)="op1.toggle($event, target)"
+          label="Bộ lọc"
+          icon="pi pi-filter"
+          badge="{{ activeFilter || '' }}"
+          badgeClass="p-badge-danger"
+        ></p-button>
+      </div>
+      <div class="col-fixed">
+        <p-button
+          *ngIf="isDynamicTable"
+          (click)="op2.toggle($event, target)"
+          label="Bộ lọc"
+          icon="pi pi-filter"
+          badge="{{ activeFilter || '' }}"
+          badgeClass="p-badge-danger"
+        ></p-button>
+      </div>
+    </div>
+    <div>
+      <span
+        class="p-input-icon-left"
+        style="width: 200px; max-width: 45vw"
+      >
+        <i class="pi pi-search"></i>
+        <input
+          class="w-100"
+          pInputText
+          type="text"
+          #searchInput
+          (input)="dt1.filterGlobal(searchInput.value, 'contains')"
+          placeholder="Từ khóa tìm kiếm"
+        />
+      </span>
+    </div>
+    <div class="flex gap-2 align-items-end">
+      <div class="col-fixed">
+        <p-toggleButton
+          *ngIf="!isDynamicTable"
+          [(ngModel)]="frozen"
+          [onIcon]="'pi pi-lock'"
+          offIcon="pi pi-lock-open"
+          [onLabel]="'  '"
+          offLabel="  "
+        ></p-toggleButton>
+      </div>
+      <p-inplace
+        *ngIf="isDynamicTable"
+        #tableColumnsInplace
+      >
+        <ng-template pTemplate="display">
+          <p-button badge="{{ selectedColumns.length }}">Chọn cột</p-button>
+        </ng-template>
+        <ng-template
+          pTemplate="content"
+          class="flex flex-row"
+        >
+          <span class="p-float-label">
+            <p-multiSelect
+              [options]="tableColumns"
+              [(ngModel)]="selectedColumns"
+              (onChange)="logSelectedColumn(tableColumnsInplace)"
+              (onPanelHide)="tableColumnsInplace.deactivate()"
+              optionLabel="header"
+              selectedItemsLabel="{0} cột được chọn"
+              [style]="{ 'min-width': '200px' }"
+              placeholder="Chọn cột"
+              [itemSize]="2"
+            ></p-multiSelect>
+            <label for="dropdown">Chọn cột</label>
+          </span>
+        </ng-template>
+      </p-inplace>
+      <div class="flex gap-2 align-items-center">
+        <span [class.hidden]="true">Đổi mode</span>
+        <p-inputSwitch
+          [class.hidden]="true"
+          [(ngModel)]="isDynamicTable"
+        ></p-inputSwitch>
+      </div>
+    </div>
+  </div>
+</p-toolbar>
+<small #target>Giữ phím Ctrl hoặc Meta để chọn sắp xếp theo nhiều cột</small>
+
+<!-- /* dynamic table */ -->
+<!-- [class.hidden]="!isDynamicTable" -->
+
+<!--    -->
+<!-- stateStorage="session"
+stateKey="register-list-session" -->
+<p-table
+  #dt1
+  [columns]="selectedColumns"
+  [frozenColumns]="frozenColumns"
+  [value]="registers"
+  [reorderableColumns]="true"
+  [resizableColumns]="true"
+  [scrollable]="true"
+  sortMode="multiple"
+  scrollHeight="600px"
+  selectionMode="multiple"
+  [(selection)]="selectedRegisters"
+  dataKey="id"
+  styleClass="p-datatable-gridlines p-datatable-striped"
+  [tableStyle]="{ 'min-width': '50rem' }"
+  [paginator]="true"
+  [selectionPageOnly]="true"
+  [rows]="10"
+  styleClass="p-datatable-striped"
+  [rowsPerPageOptions]="[10, 25, 50, 150, 200, totalRecords]"
+  [lazy]="true"
+  (onLazyLoad)="lazyLoad($event)"
+  [totalRecords]="totalRecords"
+  [lazyLoadOnInit]="false"
+  [rowHover]="true"
+  [showCurrentPageReport]="false"
+  currentPageReportTemplate="{first} - {last} của {totalRecords}"
+  [loading]="loading"
+  paginatorPosition="top"
+  [showJumpToPageDropdown]="true"
+  [showPageLinks]="false"
+  [showFirstLastIcon]="false"
+  [class.hidden]="!isDynamicTable"
+>
+  <ng-template
+    pTemplate="header"
+    let-columns
+  >
+    <tr>
+      <th
+        pFrozenColumn
+        style="width: 4rem"
+      >
+        <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+      </th>
+      <th
+        style="white-space: nowrap"
+        *ngFor="let col of columns"
+        pReorderableColumn
+        pResizableColumn
+        [pSortableColumn]="col.field"
+        style="min-width: 20px"
+      >
+        {{ col.header }}<p-sortIcon [field]="col.field"></p-sortIcon>
+      </th>
+    </tr>
+  </ng-template>
+
+  <ng-template
+    pTemplate="body"
+    let-register
+    let-columns="columns"
+  >
+    <tr>
+      <td>
+        <p-tableCheckbox [value]="register"></p-tableCheckbox>
+      </td>
+      <td
+        *ngFor="let col of columns"
+        [ngSwitch]="col.field"
+        style="padding: 0.5rem"
+      >
+        <!-- Ảnh thẻ -->
+        <div *ngSwitchCase="RegisterTableColumns.avatarPath[0]">
+          <div (click)="showDetail(register)">
+            <p-image
+              [imageStyle]="{
+                height: '4rem',
+                width: '3rem',
+                'object-fit': 'cover'
+              }"
+              [src]="
+                register.member.avatarPath ?? 'assets/img/avatar/avatar-1.png'
+                  | src
+              "
+              (onImageError)="register.member.avatarPath = undefined"
+              alt="Avatar"
+              [preview]="register.avatarPath"
+              appendTo="body"
+            ></p-image>
+          </div>
+        </div>
+        <!-- Giới tính -->
+        <div *ngSwitchCase="RegisterTableColumns.gender[0]">
+          {{ Gender.toString(_.get(register, col.field, "")) }}
+        </div>
+        <!-- số lần về chùa -->
+        <div *ngSwitchCase="RegisterTableColumns.exps[0]">
+          {{ EventExp.toString(_.get(register, col.field, "")) }}
+        </div>
+        <!-- Ảnh CCCD -->
+        <div *ngSwitchCase="RegisterTableColumns.identityCardImagePaths[0]">
+          <div>
+            <p-image
+              [imageStyle]="{
+                height: '4rem',
+                width: '3rem',
+                'object-fit': 'cover'
+              }"
+              [src]="
+                register.member.identityCardImagePaths ??
+                  'assets/img/avatar/avatar-1.png' | src
+              "
+              (onImageError)="
+                register.member.identityCardImagePaths = undefined
+              "
+              alt="CCCD"
+              [preview]="register.member.identityCardImagePaths"
+              appendTo="body"
+            ></p-image>
+          </div>
+        </div>
+        <div *ngSwitchDefault>
+          {{ _.get(register, col.field, "") }}
+        </div>
+      </td>
+    </tr>
+  </ng-template>
+</p-table>
+
+<!-- <p-card> -->
+<!-- [class.hidden]="isDynamicTable" -->
+<p-table
+  #dt2
+  [class.hidden]="isDynamicTable"
+  [scrollable]="true"
+  [value]="registers"
+  sortMode="multiple"
+  [(selection)]="selectedRegisters"
+  selectionMode="multiple"
+  dataKey="id"
+  [paginator]="true"
+  [selectionPageOnly]="true"
+  [rows]="10"
+  styleClass="p-datatable-striped"
+  [rowsPerPageOptions]="[10, 25, 50, 150, 200, totalRecords]"
+  [lazy]="true"
+  (onLazyLoad)="lazyLoad($event)"
+  [totalRecords]="totalRecords"
+  [lazyLoadOnInit]="false"
+  [rowHover]="true"
+  [showCurrentPageReport]="false"
+  currentPageReportTemplate="Từ {first} đến {last}"
+  [loading]="loading"
+  paginatorPosition="top"
+  [showJumpToPageDropdown]="true"
+  [showPageLinks]="false"
+  [showFirstLastIcon]="false"
+  [scrollDirection]="'top'"
+  [scrollLeft]="false"
+>
+  <ng-template pTemplate="caption">
+    <div class="font-bold flex justify-content-center">
+      Có tổng cộng {{ totalRecords }} đăng ký
+    </div>
+  </ng-template>
+  <ng-template pTemplate="header">
+    <tr class="white-space-nowrap">
+      <th
+        pFrozenColumn
+        [frozen]="frozen"
+        style="width: 4rem"
+      >
+        <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+      </th>
+      <th
+        pFrozenColumn
+        [frozen]="frozen"
+        style="width: 6rem"
+      >
+        Ảnh thẻ
+      </th>
+      <th
+        pFrozenColumn
+        [frozen]="frozen"
+        pSortableColumn="member.gender,member.ufullName"
+      >
+        Thông tin
+        <p-sortIcon field="member.gender,member.ufullName"></p-sortIcon>
+      </th>
+      <th pSortableColumn="member.phoneNumber">
+        Liên hệ <p-sortIcon field="phoneNumber"></p-sortIcon>
+      </th>
+      <th pSortableColumn="registerType,leaderId,registerRole DESC">
+        Hình thức
+        <p-sortIcon
+          field="registerType,leaderId,registerRole,moveType DESC"
+        ></p-sortIcon>
+      </th>
+      <!-- <th pSortableColumn="moveType">
+        Di chuyển <p-sortIcon field="moveType"></p-sortIcon>
+      </th> -->
+      <th pSortableColumn="receiveCardStatus,printStatus,clothingSize">
+        Thẻ, áo
+        <p-sortIcon
+          field="receiveCardStatus,printStatus,clothingSize"
+        ></p-sortIcon>
+      </th>
+      <th pSortableColumn="departmentDetailId,areaId,groupId">
+        Phân công
+        <p-sortIcon field="departmentDetailId,areaId,groupId"></p-sortIcon>
+      </th>
+      <th
+        #note
+        pSortableColumn="note"
+      >
+        Ghi chú <p-sortIcon field="note"></p-sortIcon>
+      </th>
+    </tr>
+  </ng-template>
+  <ng-template
+    pTemplate="body"
+    let-item
+  >
+    <tr
+      style="cursor: pointer"
+      class="white-space-nowrap"
+    >
+      <td
+        pFrozenColumn
+        [frozen]="frozen"
+      >
+        <p-tableCheckbox [value]="item"></p-tableCheckbox>
+      </td>
+      <td
+        (click)="showDetail(item)"
+        pFrozenColumn
+        [frozen]="frozen"
+      >
+        <p-image
+          [imageStyle]="{
+            height: '5rem',
+            width: '5rem',
+            'object-fit': 'cover'
+          }"
+          [src]="
+            item.member.avatarPath ?? 'assets/img/avatar/avatar-1.png' | src
+          "
+          (onImageError)="item.member.avatarPath = undefined"
+          alt="Avatar"
+          [preview]="item.avatarPath"
+          appendTo="body"
+        ></p-image>
+      </td>
+      <td
+        pFrozenColumn
+        [frozen]="frozen"
+        (click)="showDetail(item)"
+        class="font-semibold white-space-nowrap"
+        style="cursor: pointer"
+      >
+        <div class="inline-block mr-3">
+          {{ item.member.fullName }}<br />
+          {{ item.member.religiousName }}<br />
+          <small>Giới tính : {{ Gender.toString(item.member.gender) }} </small>
+        </div>
+      </td>
+      <td
+        class="white-space-nowrap"
+        (click)="showDetail(item)"
+      >
+        <span
+          *ngIf="item.member.phoneNumber"
+          class="font-semibold"
+        >
+          <a [href]="'tel:' + item.member.phoneNumber">{{
+            item.member.phoneNumber
+          }}</a></span
+        >
+        <a
+          class="text-sm block"
+          *ngIf="item.email"
+          href="mailto:{{ item.member.email }}"
+        >
+          {{ item.member.email }}</a
+        >
+        <a
+          class="text-sm block"
+          *ngIf="item.member.facebookAddress"
+          href="{{ item.member.facebookAddress | url }}"
+          target="_blank"
+        >
+          Facebook</a
+        >
+        <div>
+          {{ ContactStatusType.toString(item.contactStatus) }}
+        </div>
+      </td>
+      <td
+        class="white-space-nowrap"
+        (click)="showDetail(item)"
+      >
+        <div class="font-semibold">
+          {{ RegisterRole.toString(item.registerRole) }}
+        </div>
+        <div
+          *ngIf="item.leader"
+          class="font-semibold"
+        >
+          {{ item.leader.member.fullName }}
+        </div>
+        {{ item.startDate | date : "dd/MM/yy" }}
+        <span *ngIf="item.endDate">
+          - {{ item.endDate | date : "dd/MM/yy" }}
+        </span>
+        <div class="font-semibold">
+          {{ MoveType.toString(item.moveType) }}
+        </div>
+        <div>
+          {{ item.startTime?.name }}
+        </div>
+      </td>
+      <!-- <td
+        (click)="showDetail(item)"
+        class="white-space-nowrap"
+      ></td> -->
+      <td (click)="showDetail(item)">
+        <div>
+          <span class="font-semibold">Thẻ:</span>
+          {{ PrintStatus.toString(item.printStatus) }} -
+          {{ ReceiveCardStatus.toString(item.receiveCardStatus) }}
+        </div>
+        <div>
+          <!-- {{ item. }} -->
+        </div>
+        <div
+          class="font-semibold"
+          *ngIf="item.clothingSize"
+        >
+          Áo : {{ ClothingSize.toString(item.clothingSize) }}
+        </div>
+      </td>
+      <td (click)="showDetail(item)">
+        <div
+          class="font-semibold"
+          *ngIf="item.departmentDetail"
+        >
+          {{ item.departmentDetail.department?.name }}
+        </div>
+        <div
+          class="font-semibold"
+          *ngIf="item.area"
+        >
+          {{ item.area.name }}
+        </div>
+        <div
+          class="font-semibold"
+          *ngIf="item.group"
+        >
+          {{ item.group.name }}
+        </div>
+        {{ PositionType.toString(item.position) }}
+      </td>
+      <td (click)="showDetail(item)">
+        {{ item.note }}
+      </td>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="emptymessage">
+    <tr>
+      <td
+        class="font-bold text-center"
+        colspan="10"
+      >
+        Không có người đăng ký
+      </td>
+    </tr>
+  </ng-template>
+</p-table>
+<!-- </p-card> -->
+
+<p-dialog
+  header="Thông tin thành viên"
+  [modal]="true"
+  [maximizable]="true"
+  [style]="{ width: '75vw' }"
+  [(visible)]="formVisible"
+  appendTo="body"
+  [scrollLeft]="true"
+  [blockScroll]="true"
+  [closable]="true"
+  [breakpoints]="{ '576px': '100vw' }"
+  [resizable]="true"
+>
+  <div class="">
+    <app-member
+      *ngIf="formVisible"
+      [member]="selectedRegister?.member"
+      [(register)]="selectedRegister"
+      (registerChange)="refresh()"
+      [event]="selectedEvent"
+      [events]="events"
+      [readonly]="!editingForm"
+      [departments]="departments"
+      [skills]="skills"
+    ></app-member>
+  </div>
+</p-dialog>
+
+<p-dialog
+  header="Xem trước thông tin nhập từ tệp Excel"
+  [modal]="true"
+  [maximizable]="true"
+  [style]="{ width: '75vw' }"
+  [(visible)]="showPreviewDialog"
+  appendTo="body"
+  [scrollLeft]="true"
+  [blockScroll]="true"
+  [closable]="true"
+  [breakpoints]="{ '576px': '100vw' }"
+  [resizable]="true"
+>
+  <p-toolbar>
+    <div>
+      <label
+        pButton
+        pRipple
+        label="Nhập lại"
+        icon="fa-solid fa-upload"
+        for="excelUpload"
+        class="p-button-outlined mr-3"
+      ></label>
+      <button
+        pButton
+        pRipple
+        label="Lưu"
+        icon="fa-regular fa-floppy-disk"
+        class="p-button-outlined p-button-success"
+        (click)="import()"
+      ></button>
+    </div>
+  </p-toolbar>
+  <h3>Danh sách cell chưa chính xác</h3>
+  <app-excel-error-table [errors]="previewErrors"></app-excel-error-table>
+  <p-card>
+    <ng-template pTemplate="header">
+      <h3 class="mt-3 ml-3">Danh sách đăng ký</h3>
+    </ng-template>
+    <app-register-table [registers]="previewRegisters"> </app-register-table>
+  </p-card>
+</p-dialog>
+
+<input
+  type="file"
+  class="hidden"
+  id="excelUpload"
+  #excelUpload
+  accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel"
+  (input)="previewExcel(excelUpload.files, $event)"
+/>
+
+<app-department-assign-dialog
+  [department]="filterDepartmentDetail"
+  [area]="filterArea"
+  [group]="filterGroup"
+  [(visible)]="showAssignPopup"
+  [fromRegisterList]="true"
+  [registerList]="selectedRegisters"
+  [event]="selectedEvent"
+>
+</app-department-assign-dialog>

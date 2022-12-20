@@ -1,0 +1,214 @@
+<p-table
+  [value]="registers"
+  [globalFilterFields]="[
+    'member.fullName',
+    'member.email',
+    'member.phoneNumber',
+    'member.idetityCard',
+    'member.temporaryAddress',
+    'wishDepartment.name'
+  ]"
+  [paginator]="true"
+  [rows]="10"
+  [rowsPerPageOptions]="[10, 25, 50, 100]"
+  [scrollable]="true"
+  paginatorPosition="both"
+  [showCurrentPageReport]="true"
+  currentPageReportTemplate="Từ {first} đến {last} của {totalRecords} đăng ký"
+  [scrollable]="true"
+>
+  <ng-template pTemplate="header">
+    <tr class="white-space-nowrap">
+      <th pSortableColumn="member.fullName">
+        Thông tin <p-sortIcon field="member.fullName"></p-sortIcon>
+      </th>
+      <th pSortableColumn="member.identityCardImagePaths.length">CCCD</th>
+      <th pSortableColumn="member.identityCard">
+        Định danh <p-sortIcon field="member.identityCard"></p-sortIcon>
+      </th>
+      <th pSortableColumn="member.avatarPath">Ảnh thẻ</th>
+      <th pSortableColumn="member.phoneNumber">
+        Liên hệ <p-sortIcon field="member.phoneNumber"></p-sortIcon>
+      </th>
+      <th pSortableColumn="member.permanentProvinceId">
+        Thường trú <p-sortIcon field="member.permanentProvinceId"></p-sortIcon>
+      </th>
+      <th pSortableColumn="member.temporaryProvinceId">
+        Tạm trú <p-sortIcon field="member.temporaryProvinceId"></p-sortIcon>
+      </th>
+      <th pSortableColumn="moveType">
+        Di chuyển <p-sortIcon field="moveType"></p-sortIcon>
+      </th>
+      <th
+        pSortableColumn="wishDepartmentId"
+        pSortableColumn="departmentDetailId"
+      >
+        Phân ban <p-sortIcon field="wishDepartmentId"></p-sortIcon>
+      </th>
+      <th pSortableColumn="expDepartmentIds">
+        Kinh nghiệm <p-sortIcon field="expDepartmentIds"></p-sortIcon>
+      </th>
+      <th>Ghi chú</th>
+    </tr></ng-template
+  >
+
+  <ng-template
+    pTemplate="body"
+    let-item
+  >
+    <tr class="white-space-nowrap">
+      <td>
+        <div class="font-semibold">
+          {{ item.member.fullName }}
+        </div>
+        <div>
+          {{ item.member.religiousName }}
+        </div>
+      </td>
+      <td>
+        <div
+          class="flex"
+          *ngIf="item.member.identityCardImagePaths?.length"
+        >
+          <p-image
+            *ngFor="let image of item.member.identityCardImagePaths"
+            [preview]="true"
+            height="50"
+            width="50"
+            [imageStyle]="{ 'object-fit': 'cover' }"
+            [src]="image | src"
+            class="mr-1"
+            (onImageError)="item.member.identityCardImagePathError = image"
+          >
+          </p-image>
+          <a
+            [href]="item.member.identityCardImagePathError | src"
+            target="_blank"
+            class="mt-auto"
+            *ngIf="
+              item.member.identityCardImagePathError &&
+              item.member.identityCardImagePaths?.length
+            "
+          >
+            <i class="fa-solid fa-arrow-up-right-from-square"></i>
+          </a>
+        </div>
+      </td>
+      <td>
+        <div class="font-semibold">
+          {{ item.member.identityCard }}
+        </div>
+        <div>
+          {{ item.member.dateOfBirth | date : "dd/MM/yyyy" }}
+        </div>
+        <div>Giới tính : {{ Gender.toString(item.member.gender) }}</div>
+      </td>
+      <td>
+        <div class="flex">
+          <p-image
+            [preview]="true"
+            height="50"
+            width="50"
+            [imageStyle]="{ 'object-fit': 'cover' }"
+            [src]="item.member.avatarPath | src"
+            class="mr-1"
+            (onImageError)="item.member.avatarPathError = true"
+          >
+          </p-image>
+          <a
+            [href]="item.member.avatarPath | src"
+            target="_blank"
+            class="mt-auto"
+            *ngIf="item.member.avatarPathError && item.member.avatarPath"
+          >
+            <i class="fa-solid fa-arrow-up-right-from-square"></i>
+          </a>
+        </div>
+      </td>
+      <td>
+        <div class="font-semibold">
+          <a href="tel:{{ item.member.phoneNumber }}">{{
+            item.member.phoneNumber
+          }}</a>
+        </div>
+        <div class="font-semibold">
+          <a href="mailto:{{ item.member.email }}">{{ item.member.email }}</a>
+        </div>
+      </td>
+      <td class="white-space-nowrap">
+        <div
+          class="font-semibold"
+          *ngIf="item.member.permanentProvince"
+        >
+          {{ item.member.permanentProvince.pre }}
+          {{ item.member.permanentProvince.name }}
+        </div>
+        <div *ngIf="item.member.permanentDistrict">
+          {{ item.member.permanentDistrict.pre }}
+          {{ item.member.permanentDistrict.name }}
+        </div>
+        <div *ngIf="item.member.permanentWard">
+          {{ item.member.permanentWard.pre }}
+          {{ item.member.permanentWard.name }}
+        </div>
+      </td>
+      <td class="white-space-nowrap">
+        <div
+          class="font-semibold"
+          *ngIf="item.member.temporaryProvince"
+        >
+          {{ item.member.temporaryProvince.pre }}
+          {{ item.member.temporaryProvince.name }}
+        </div>
+        <div *ngIf="item.member.temporaryDistrict">
+          {{ item.member.temporaryDistrict.pre }}
+          {{ item.member.temporaryDistrict.name }}
+        </div>
+        <div *ngIf="item.member.temporaryWard">
+          {{ item.member.temporaryWard.pre }}
+          {{ item.member.temporaryWard.name }}
+        </div>
+      </td>
+      <td style="max-width: 250px">
+        <div class="font-semibold">
+          {{ MoveType.toString(item.moveType) }}
+        </div>
+        <div>
+          {{ item.otherStartTime | date : "dd/MM/yy" }}
+          <ng-container *ngIf="item.otherLeaveTime">
+            - {{ item.otherLeaveTime | date : "dd/MM/yy" }}
+          </ng-container>
+        </div>
+        <div *ngIf="item.moveType == MoveType.ByPlane">
+          Máy bay : {{ item.startPlaneCode }} - {{ item.returnPlaneCode }}
+        </div>
+        <div
+          title="{{ item.otherStartAddress }}"
+          class="text-overflow-ellipsis overflow-hidden"
+          *ngIf="item.moveType == MoveType.WithCTN"
+        >
+          {{ item.otherStartAddress }}
+        </div>
+      </td>
+      <td>
+        <div class="font-semibold">NV : {{ item.wishDepartment?.name }}</div>
+        <div class="font-semibold">
+          ĐP : {{ item.departmentDetail?.department?.name }}
+        </div>
+        <div>Code : {{ item.code }}</div>
+      </td>
+      <td>
+        <div
+          class="font-semibold"
+          *ngIf="item.expDepartments?.length"
+        >
+          {{ item.expDepartments[0]?.name }}
+        </div>
+        {{ EventExp.toString(item.member.exps) }}
+      </td>
+      <td>
+        {{ item.note }}
+      </td>
+    </tr>
+  </ng-template>
+</p-table>

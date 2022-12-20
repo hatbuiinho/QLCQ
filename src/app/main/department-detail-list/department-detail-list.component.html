@@ -1,0 +1,155 @@
+<p-toolbar>
+  <ng-template pTemplate="left">
+    <p-dropdown
+      class="mr-3"
+      [style]="{ 'width-min': '200px', 'max-width': '45vw' }"
+      [options]="events"
+      [(ngModel)]="selectedEventId"
+      [filter]="true"
+      filterBy="name"
+      optionValue="id"
+      optionLabel="name"
+      emptyFilterMessage="Không tìm thấy đại lễ phù hợp"
+      emptyMessage="Danh sách đại lễ trống"
+    >
+    </p-dropdown>
+    <p-splitButton
+      label="Thêm ban"
+      [model]="btnItems"
+      (onClick)="add()"
+      styleClass="p-button-raised p-button-text"
+      [style]="{ width: '200px', 'max-width': '40vw' }"
+    ></p-splitButton>
+  </ng-template>
+  <ng-template pTemplate="right">
+    <p-dropdown
+      [options]="statuses"
+      (onChange)="dt1.filterGlobal($event.value, FilterMatchMode.EQUALS)"
+      #dropdown
+      [style]="{ width: '200px', 'max-width': '45vw' }"
+      placeholder="Tất cả"
+      [showClear]="true"
+      optionValue="value"
+      optionLabel="name"
+      class="mr-3"
+    >
+    </p-dropdown>
+    <span
+      class="p-input-icon-left"
+      style="width: 200px; max-width: 45vw"
+    >
+      <i class="pi pi-search"></i>
+      <input
+        class="w-100"
+        pInputText
+        type="text"
+        #searchInput
+        (input)="dt1.filterGlobal(searchInput.value, 'contains')"
+        placeholder="Từ khóa tìm kiếm"
+      />
+    </span>
+  </ng-template>
+</p-toolbar>
+<small>Giữ phím Ctrl hoặc Meta để chọn sắp xếp theo nhiều cột</small>
+<p-table
+  #dt1
+  [loading]="loading"
+  [scrollable]="true"
+  scrollHeight="calc(100vh - {{ tableOffsetTop }}px)"
+  [value]="departmentDetails"
+  sortMode="multiple"
+  [(selection)]="selectedDeptDetails"
+  dataKey="id"
+  [paginator]="true"
+  [selectionPageOnly]="true"
+  [rows]="10"
+  styleClass="p-datatable-striped"
+  [rowsPerPageOptions]="[10, 25, 50]"
+  [globalFilterFields]="[
+    'department.code',
+    'department.name',
+    'requiredQuantity',
+    'note',
+    'description',
+    'statusId'
+  ]"
+>
+  <ng-template pTemplate="header">
+    <tr>
+      <th style="width: 4rem">
+        <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+      </th>
+      <th pSortableColumn="departmentId">
+        Ban <p-sortIcon field="departmentId"></p-sortIcon>
+      </th>
+      <th pSortableColumn="statusId">
+        Trạng thái <p-sortIcon field="statusId"></p-sortIcon>
+      </th>
+      <!-- <th pSortableColumn="statusId">
+        Trạng thái <p-sortIcon field="statusId"></p-sortIcon>
+      </th> -->
+      <th pSortableColumn="note">
+        Ghi chú <p-sortIcon field="note"></p-sortIcon>
+      </th>
+      <th style="width: 4rem"></th>
+    </tr>
+  </ng-template>
+  <ng-template
+    pTemplate="body"
+    let-dept
+  >
+    <tr style="cursor: point">
+      <td>
+        <p-tableCheckbox [value]="dept"></p-tableCheckbox>
+      </td>
+      <td
+        (click)="showDetail(dept)"
+        class="clickable font-semibold"
+      >
+        {{ dept.department?.name }}<br />
+        {{ dept.department?.code }}
+      </td>
+      <td>
+        <p class="font-semibold">{{ StatusType.toString(dept.statusId) }}</p>
+        {{ dept.actualQuantity }}/
+        <span *ngIf="dept.requiredQuantity">{{ dept.requiredQuantity }}</span>
+        <i
+          *ngIf="!dept.requiredQuantity || dept.requiredQuantity < 0"
+          class="fa-solid fa-infinity"
+        ></i>
+      </td>
+      <td>
+        {{ dept.note }}
+      </td>
+      <td>
+        <button
+          (click)="edit(dept)"
+          pButton
+          pRipple
+          type="button"
+          icon="pi pi-pencil"
+          class="p-button-rounded p-button-text"
+        ></button>
+      </td>
+    </tr>
+  </ng-template>
+  <!-- <ng-template pTemplate=""> </ng-template> -->
+</p-table>
+
+<app-department-detail-dialog
+  (submit)="save($event)"
+  [departments]="remainDepartments"
+  [(visible)]="formVisible"
+></app-department-detail-dialog>
+
+<p-dialog
+  header="Chi tiết ban đại lễ"
+  appendTo="body"
+  [style]="{ width: '75vw' }"
+  [(visible)]="detailVisible"
+  [maximizable]="true"
+  [closable]="true"
+  [modal]="true"
+>
+  <app-department-detail></app-department-detail>
+</p-dialog>

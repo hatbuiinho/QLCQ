@@ -1,0 +1,177 @@
+<p-button
+  icon="fa-solid fa-print"
+  (click)="print()"
+  label="In thẻ"
+  badge="{{ registers.length || '' }}"
+  styleClass="p-button-success"
+></p-button>
+<p-overlay
+  #panel
+  appendTo="body"
+  [style]="{ width: '100%', background: 'white' }"
+  [(visible)]="isShowDialog"
+>
+  <div id="printable-content">
+    <div
+      class="pageA4Portrait"
+      *ngFor="let page of pages"
+    >
+      <div
+        class="card"
+        *ngFor="let item of page.pageContent"
+        [ngSwitch]="item.departmentCode"
+      >
+        <ng-container>
+          <img
+            *ngSwitchCase="DepartmentShortName.ATN"
+            [src]="ATN"
+            class="card__img"
+          />
+          <img
+            *ngSwitchCase="DepartmentShortName.BD"
+            [src]="BD"
+            class="card__img"
+          />
+          <img
+            *ngSwitchCase="DepartmentShortName.BDS"
+            [src]="BDS"
+            class="card__img"
+          />
+          <img
+            *ngSwitchCase="DepartmentShortName.RC"
+            [src]="RC"
+            class="card__img"
+          />
+          <img
+            *ngSwitchCase="DepartmentShortName.BV"
+            [src]="BV"
+            class="card__img"
+          />
+          <img
+            *ngSwitchCase="DepartmentShortName.CD"
+            [src]="CD"
+            class="card__img"
+          />
+          <img
+            *ngSwitchCase="DepartmentShortName.CH"
+            [src]="CH"
+            class="card__img"
+          />
+          <img
+            *ngSwitchCase="DepartmentShortName.CT"
+            [src]="CT"
+            class="card__img"
+          />
+          <img
+            *ngSwitchCase="DepartmentShortName.HD"
+            [src]="HD"
+            class="card__img"
+          />
+          <img
+            *ngSwitchCase="DepartmentShortName.HD1"
+            [src]="HD1"
+            class="card__img"
+          />
+          <img
+            *ngSwitchCase="DepartmentShortName.HD2"
+            [src]="HD2"
+            class="card__img"
+          />
+          <img
+            *ngSwitchCase="DepartmentShortName.HDTN"
+            [src]="HDTN"
+            class="card__img"
+          />
+          <img
+            *ngSwitchCase="DepartmentShortName.HM"
+            [src]="HM"
+            class="card__img"
+          />
+          <img
+            *ngSwitchCase="DepartmentShortName.KSD"
+            [src]="KSD"
+            class="card__img"
+          />
+          <img
+            *ngSwitchCase="DepartmentShortName.MT"
+            [src]="MT"
+            class="card__img"
+          />
+          <img
+            *ngSwitchCase="DepartmentShortName.NSDL"
+            [src]="NSDL"
+            class="card__img"
+          />
+          <img
+            *ngSwitchCase="DepartmentShortName.TGN"
+            [src]="TGN"
+            class="card__img"
+          />
+          <img
+            *ngSwitchCase="DepartmentShortName.TGT"
+            [src]="TGT"
+            class="card__img"
+          />
+          <img
+            *ngSwitchCase="DepartmentShortName.TK"
+            [src]="TK"
+            class="card__img"
+          />
+          <img
+            *ngSwitchCase="DepartmentShortName.TKY"
+            [src]="TKY"
+            class="card__img"
+          />
+          <img
+            *ngSwitchCase="DepartmentShortName.TN"
+            [src]="TN"
+            class="card__img"
+          />
+          <img
+            *ngSwitchCase="DepartmentShortName.HTVN"
+            [src]="HTVN"
+            class="card__img"
+          />
+          <img
+            *ngSwitchCase="DepartmentShortName.DPX"
+            [src]="DPX"
+            class="card__img"
+          />
+        </ng-container>
+
+        <img
+          src="{{ item.avatarPath | src }}"
+          class="card__avatar"
+        />
+
+        <span class="card__code">{{ item.registerCode }}</span>
+        <div class="card__name-container">
+          <h3 class="card__name card__religiousName">
+            {{ item.religiousName }}
+          </h3>
+          <h3 class="card__name card__fullName">{{ item.fullName }}</h3>
+        </div>
+
+        <span
+          [class]="
+            'card__organzationStucture ' +
+            ('ĐPX' == item.departmentCode || item.departmentCode == 'BV')
+              ? 'text-white'
+              : 'text-black'
+          "
+          >{{ item.organzationStuctureName }}</span
+        >
+
+        <div class="card__qrcode">
+          <qr-code
+            [size]="106"
+            value="{{ item.qrCodeLink }}"
+            [errorCorrectionLevel]="'L'"
+          ></qr-code>
+        </div>
+      </div>
+
+      <div class="no">{{ page.pageNo }}</div>
+    </div>
+  </div>
+</p-overlay>

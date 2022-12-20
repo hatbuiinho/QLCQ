@@ -1,0 +1,26 @@
+export enum DepartmentShortName {
+  ATN = 'ATN',
+  BD = 'BD',
+  BDS = 'BĐS',
+  RC = 'RC',
+  BV = 'BV',
+  CD = 'CĐ',
+  CH = 'CH',
+  CT = 'CT',
+  HD = 'HD',
+  HD1 = 'HD1',
+  HD2 = 'HD2',
+  HDTN = 'HDTN',
+  HM = 'HM',
+  KSD = 'KSĐ',
+  MT = 'MT',
+  NSDL = 'NSĐL',
+  TGN = 'TGN',
+  TGT = 'TGT',
+  TK = 'TK',
+  TKY = 'TKY',
+  TN = 'TN',
+  DPX = 'ĐPX',
+  HTVN = 'HTVN'
+  //ATN
+}

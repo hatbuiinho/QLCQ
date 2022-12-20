@@ -1,0 +1,158 @@
+<p-dialog
+  header="Ban đại lễ"
+  [modal]="true"
+  [maximizable]="true"
+  [style]="{ width: '50vw' }"
+  [(visible)]="visible"
+  appendTo="body"
+  [scrollLeft]="true"
+  [blockScroll]="true"
+  [closable]="true"
+  (onHide)="onHide()"
+  [breakpoints]="{ '960px': '75vw', '576px': '100vw' }"
+>
+  <form
+    [formGroup]="form"
+    class="p-fluid my-3"
+  >
+    <label
+      for="depts"
+      class="font-semibold"
+      >Loại ban</label
+    >
+    <div class="field">
+      <p-dropdown
+        id="depts"
+        placeholder="Loại ban"
+        [options]="departments"
+        optionLabel="name"
+        optionValue="id"
+        emptyFilterMessage="Không tìm thấy ban phù hợp"
+        emptyMessage="Không có ban phù hợp"
+        formControlName="departmentId"
+        [filter]="true"
+        filterBy="name,code"
+        appendTo="body"
+      >
+      </p-dropdown>
+      <small
+        *ngIf="
+          form.controls['departmentId'].touched &&
+          form.controls['departmentId'].errors
+        "
+        class="p-error"
+        >Chọn một ban để tạo</small
+      >
+    </div>
+    <div class="field">
+      <label
+        for="requiredQuantity"
+        class="font-semibold"
+        >Số lượng yêu cầu</label
+      >
+      <p-inputNumber
+        inputId="requiredQuantity"
+        formControlName="requiredQuantity"
+      >
+      </p-inputNumber>
+    </div>
+    <div class="field">
+      <p class="font-semibold mb-1">Phân loại ban</p>
+      <div class="d-flex justify-content-start">
+        <div class="field-radiobutton pl-5 w-6">
+          <p-radioButton
+            [value]="ScopeType.Private"
+            formControlName="type"
+            inputId="t1"
+          ></p-radioButton>
+          <label for="t1">Nội bộ</label>
+        </div>
+        <div class="field-radiobutton w-6">
+          <p-radioButton
+            [value]="ScopeType.Public"
+            formControlName="type"
+            inputId="t2"
+          ></p-radioButton>
+          <label for="t2">Công khai</label>
+        </div>
+      </div>
+    </div>
+    <div class="field">
+      <p class="mb-1 font-semibold">Cho phép đăng ký</p>
+      <div class="d-flex justify-content-start">
+        <div class="field-radiobutton pl-5 w-6">
+          <p-radioButton
+            [value]="true"
+            formControlName="isVisible"
+            inputId="v2"
+          ></p-radioButton>
+          <label for="v2">Hiện thị trong trang đăng ký</label>
+        </div>
+        <div class="field-radiobutton w-6">
+          <p-radioButton
+            [value]="false"
+            formControlName="isVisible"
+            inputId="v1"
+          ></p-radioButton>
+          <label for="v1">Ẩn khỏi trang đăng ký</label>
+        </div>
+      </div>
+    </div>
+    <div
+      *ngIf="form.value.isVisible"
+      class="field"
+    >
+      <label
+        for="fileUpload"
+        class="font-semibold"
+        >Ảnh đại diện ban</label
+      >
+      <p-fileUpload
+        [multiple]="false"
+        [maxFileSize]="25000000"
+        chooseLabel="Chọn ảnh"
+        cancelLabel="Hủy"
+        [showUploadButton]="false"
+      ></p-fileUpload>
+    </div>
+    <div class="field mt-5">
+      <span class="p-float-label">
+        <input
+          type="text"
+          id="inputtext"
+          pInputText
+          formControlName="note"
+          class=""
+        />
+        <label
+          for="inputtext"
+          class="font-semibold"
+          >Ghi chú</label
+        >
+      </span>
+    </div>
+    <div class="field">
+      <label
+        for=""
+        class="font-semibold"
+        >Mô tả</label
+      >
+      <p-editor
+        formControlName="description"
+        [style]="{ height: '320px' }"
+      ></p-editor>
+    </div>
+  </form>
+  <ng-template pTemplate="footer">
+    <div class="flex justify-content-end">
+      <button
+        pButton
+        pRipple
+        type="button"
+        label="Lưu"
+        (click)="formSubmit()"
+        class="p-button-outlined"
+      ></button>
+    </div>
+  </ng-template>
+</p-dialog>
