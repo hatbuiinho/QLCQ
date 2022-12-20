@@ -722,4 +722,16 @@ export class RegisterListComponent implements OnInit, AfterViewInit, OnChanges {
   // toggleFilterPanel() {
   //   this.filterPanel.nativeElement.click();
   // }
+  changePrintStatus() {
+    const assignDepartmentRegisters = this.selectedRegisters
+      .filter((reg) => reg.departmentDetail)
+      .map((reg) => {
+        reg.printStatus = PrintStatus.DaIn;
+        return reg;
+      });
+    alert('đã in xong');
+    this.eventRegistryService.patchFields(assignDepartmentRegisters, [
+      'printStatus',
+    ]);
+  }
 }

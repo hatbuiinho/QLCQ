@@ -4,7 +4,14 @@ import { firstValueFrom } from 'rxjs';
 import { CustomMessageServiceService } from 'src/app/Shared/Services/custom-message-service.service';
 import { CtnpqService } from './../../Services/ctnpq.service';
 import { DepartmentShortName } from './../../dtos/Enums/DepartmentShortName.enum';
-import { Component, Input, QueryList, ViewChild } from '@angular/core';
+import {
+  Component,
+  Input,
+  QueryList,
+  ViewChild,
+  Output,
+  EventEmitter,
+} from '@angular/core';
 import { PositionType } from '../../dtos/Enums/PositionType.enum';
 import { EventRegistryDto } from '../../dtos/EventRegistries/EventRegistryDto.model';
 import { Page } from '../../dtos/Print/Page';
@@ -20,7 +27,7 @@ export class PrintCardComponent {
   // @ViewChild(HTMLImageElement) images!: QueryList<HTMLImageElement>;
   @Input() public DepartmentShortName = DepartmentShortName;
   @Input() registers: EventRegistryDto[] = [];
-  @Input() onPrintComplete: () => void = () => {};
+  @Output() onPrintComplete: EventEmitter<any> = new EventEmitter();
 
   public recordsPerPage: number = 5;
   public pages: Page[] = [];
@@ -265,9 +272,7 @@ export class PrintCardComponent {
     }, 1000);
 
     window.onafterprint = () => {
-      if (this.onPrintComplete) {
-        this.onPrintComplete();
-      }
+      this.onPrintComplete.emit();
     };
   }
 

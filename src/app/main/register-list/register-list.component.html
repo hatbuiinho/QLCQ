@@ -2,7 +2,6 @@
   #op1
   [showCloseIcon]="true"
   [dismissable]="true"
-  [style]="{ width: dt1.el.nativeElement.offsetWidth + 'px' }"
 >
   <ng-template pTemplate>
     <div class="p-fluid w-100">
@@ -235,7 +234,6 @@
   #op2
   [showCloseIcon]="true"
   [dismissable]="true"
-  [style]="{ width: dt2.el.nativeElement.offsetWidth + 'px' }"
 >
   <ng-template pTemplate>
     <div class="p-fluid w-100">
@@ -537,7 +535,10 @@
           label="Phân ban"
           badge="{{ selectedRegisters.length || '' }}"
         ></p-button>
-        <app-print-card [registers]="selectedRegisters"></app-print-card>
+        <app-print-card
+          [registers]="selectedRegisters"
+          (onPrintComplete)="changePrintStatus()"
+        ></app-print-card>
       </div>
 
       <div class="col-fixed">
@@ -616,11 +617,8 @@
         </ng-template>
       </p-inplace>
       <div class="flex gap-2 align-items-center">
-        <span [class.hidden]="true">Đổi mode</span>
-        <p-inputSwitch
-          [class.hidden]="true"
-          [(ngModel)]="isDynamicTable"
-        ></p-inputSwitch>
+        <span>Đổi mode</span>
+        <p-inputSwitch [(ngModel)]="isDynamicTable"></p-inputSwitch>
       </div>
     </div>
   </div>
@@ -766,7 +764,7 @@ stateKey="register-list-session" -->
 <!-- <p-card> -->
 <!-- [class.hidden]="isDynamicTable" -->
 <p-table
-  #dt2
+  #dt1
   [class.hidden]="isDynamicTable"
   [scrollable]="true"
   [value]="registers"
