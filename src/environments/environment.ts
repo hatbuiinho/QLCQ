@@ -12,5 +12,5 @@ export const environment = {
   // REST_API_SERVER: 'https://ctnpq.com/apidl',
   // MEDIA_SERVER: 'https://ctnpq.com/apidl/BlobStorage/GetOne',
   CTN_APIS: 'https://ctnpq.com/apis/',
-  REGISTRY_HOST: 'https://dev-dkdl.vercel.app',
+  REGISTRY_HOST: 'https://dangkydaile.vercel.app',
 };
